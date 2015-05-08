@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="bchat-console">
+
+    <style>
+        :host {
+            display: block;
+        }
+    </style>
+
+    <template>
+
+
+        <div>Console</div>
+
+        <template is="x-repeat" items="{{messages}}">
+            <div>{{item.name}}: <span>{{item.message}}</span></div>
+         </template>
+
+        <p>
+
+        <div>
+            <input is="iron-input" bind-value="{{message}}" value="{{value::input}}">
+            <button is="paper-icon-button" on-tap="sendMessage">Send</button>
+        </div>
+        <br>
+        bind to <code>bind-value</code>: <span>[[message]]</span>
+        <br>
+        bind to <code>value::input</code>: <span>{{value}}</span>
+        </p>
+
+
+    </template>
+
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'bchat-console',
+        message: 'coucou',
+
+        properties: {
+            first: String,
+            last: String
+        },
+        ready: function () {
+            this.messages = [
+                {name: 'Bob', message: 'Smith'},
+                {name: 'Sally', message: 'Johnson'}
+            ];
+        },
+        sendMessage: function (event, data) {
+
+            this.messages.push({name: 'me', message: this.message});
+            this.message = '';
+        }
+    });
+</script>
