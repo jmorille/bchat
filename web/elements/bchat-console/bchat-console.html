@@ -10,14 +10,13 @@
 
     <template>
 
+ 
 
-        <div>Console</div>
-
-        <template is="x-repeat" items="{{messages}}">
-            <div>{{item.name}}: <span>{{item.message}}</span></div>
+        <template id="msgList" is="dom-repeat" items="[[messages]]">
+            <div>[[item.name]]: <span>[[item.message]]</span></div>
          </template>
 
-        <p>
+         <p>
 
         <div>
             <input is="iron-input" bind-value="{{message}}" value="{{value::input}}">
@@ -38,6 +37,8 @@
     Polymer({
         is: 'bchat-console',
         message: 'coucou',
+        lastRecieveMsg: undefined,
+        lastSendMsg: undefined,
 
         properties: {
             first: String,
@@ -45,13 +46,14 @@
         },
         ready: function () {
             this.messages = [
-                {name: 'Bob', message: 'Smith'},
-                {name: 'Sally', message: 'Johnson'}
+                {name: 'Bob', message: 'Hello Alice'},
+                {name: 'Alice', message: 'Hi Bob!!!'}
             ];
         },
         sendMessage: function (event, data) {
-
-            this.messages.push({name: 'me', message: this.message});
+            var sendMsg = {name: 'me', message: this.message};
+            this.messages.push(sendMsg);
+            this.lastSendMsg= sendMsg;
             this.message = '';
         }
     });
