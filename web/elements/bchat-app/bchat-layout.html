@@ -1,74 +1,84 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="bchat-layout">
 
-    <style>
-        :host {
-            display: block;
-        }
+<polymer-element name="bchat-layout" attributes="bannertitle">
 
-        paper-header-panel {
-            height: 100%;
-        }
-
-        /* TODO: these colors should come from paper-styles/default-theme.html
-             once Polymer/polymer#1415 is fixed. */
-        paper-drawer-panel #drawer {
-            background-color: #3f51b5;
-            border-right: 1px solid #ccc;
-        }
-        paper-drawer-panel::shadow #drawer {
-            background-color: #3f51b5;
-            border-right: 1px solid #ccc;
-        }
-        paper-drawer-panel[right-drawer] #drawer {
-            border-left: 1px solid #ccc;
-            border-right: none;
-        }
-        paper-drawer-panel[right-drawer]::shadow #drawer {
-            border-left: 1px solid #ccc;
-            border-right: none;
-        }
-        paper-drawer-panel #main  { background-color: #c5cae9 }
-        paper-drawer-panel::shadow #main { background-color: #c5cae9; }
-        button {
-            width: 160px;
-            height: 40px;
-            font-size: 16px;
-            margin: 8px;
-        }
-    </style>
 
     <template>
+        <style>
+            :host {
+                display: block;
+            }
 
-        <paper-drawer-panel  id="paperDrawerPanel">
-            <paper-header-panel drawer mode="waterfall" tall-class="medium-tall">
-                <div class="paper-header">waterfall-tall (tallClass: medium-tall)</div>
-                <div class="content">
+            [main] {
+                background-color: #F9F9F9;
+            }
+
+            [drawer] {
+                background-color: #F9F9F9;
+            }
+
+            core-toolbar [icon="more-vert"] {
+                padding-right: 0;
+            }
+
+            paper-menu-button paper-item {
+                color: #000000;
+            }
+
+            .menu-icon {
+                height: 32px;
+                width: 48px;
+                margin: 6px;
+            }
+
+            .site-banner {
+                background-color: #7986cb;
+                color: white;
+            }
+
+            .site-menu {
+                background-color: #EEEEEE;
+                margin: 0px;
+                padding: 0px;
+            }
+
+        </style>
+
+
+        <core-drawer-panel id="paperDrawerPanel">
+            <core-header-panel drawer class="site-menu" mode="waterfall">
+                <!-- Side Menu Header -->
+                <core-toolbar>
+                    <div id="siteMenuHeaderContent" on-tap="{{siteMenuHeaderTapHandler}}" layout horizontal center>
+                        <core-icon src="/images/polymer-logo.svg" class="menu-icon"></core-icon>
+                        <span>Menu</span>
+                    </div>
+                </core-toolbar>
+                <!-- Side Menu -->
+                <div>
                     Menu
                 </div>
-            </paper-header-panel>
-            <paper-header-panel main mode="waterfall-tall" tall-class="medium-tall">
-                <div  class="paper-header">
-                    <paper-icon-button icon="menu" title="menu"></paper-icon-button>
-                    <paper-icon-button icon="arrow-back" title="arrow-back"></paper-icon-button>
-                    <paper-icon-button class="red" icon="favorite" title="red icon">coucou</paper-icon-button>
-                    <button paper-drawer-toggle>toggle drawer</button>
-                    <div class="bottom indent">BChat</div>
-                </div>
-                <div class="content fit">
-                    <div>Content</div>
+            </core-header-panel>
+            <core-header-panel main mode="waterfall-tall" tallclass="medium-tall">
+                <!-- Site Banner -->
+                <core-toolbar class="site-banner">
+                    <paper-icon-button icon="menu" core-drawer-toggle></paper-icon-button>
+                    <div class="bottom indent">{{bannertitle}}</div>
+                    <span flex></span>
+                    <content id="contentSiteBannerMenu" select="[banner-menu]"></content>
+                </core-toolbar>
+                <!-- Content -->
+                <div class="content">
                     <content></content>
                 </div>
-            <paper-header-panel>
-        </paper-drawer-panel>
+            </core-header-panel>
+        </core-drawer-panel>
 
- 
+
     </template>
 
-</dom-module>
-<script>
-    Polymer({
-        is: 'bchat-layout'
-    });
-</script>
+    <script>
+        Polymer('bchat-layout', {});
+    </script>
+</polymer-element>

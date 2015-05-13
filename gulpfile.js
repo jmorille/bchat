@@ -381,17 +381,17 @@ var vulcanizeFunc = function (cb) {
     .pipe($.if(isErrorEatByWatch, $.plumber({errorHandler: errorNotif('Vulcanize Error')})))
     .pipe(debug({title: 'vulcanize :'}))
     //  .pipe($.rename('elements.vulcanized.html'))
-//    .pipe($.vulcanize({
-//      dest: DEST_DIR,
-//      abspath: path.app,
-//      strip: prod,
-//      inline: true,
-//      csp: true,
-//      excludes: {
-        //imports: ['polymer.html$'],
-//        styles: ['/styles/main.css']
-//      }
-//    }))
+    .pipe($.vulcanize({
+      dest: DEST_DIR,
+      abspath: path.app,
+      strip: prod,
+      inline: true,
+      csp: true,
+      excludes: {
+        imports: ['polymer.html$'],
+        styles: ['/styles/main.css']
+      }
+    }))
     .pipe(gulp.dest(DEST_DIR))
     .pipe(livereload());
   //  .pipe(browserSyncReload({stream: true}));

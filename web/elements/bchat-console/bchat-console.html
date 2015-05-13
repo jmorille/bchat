@@ -1,60 +1,65 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="bchat-console">
-
-    <style>
-        :host {
-            display: block;
-        }
-    </style>
+<polymer-element name="bchat-console" attributes="">
 
     <template>
+        <style>
+            :host {
+                display: block;
+            }
+            .list {
+                height: 300px;
+            }
+            .row {
+                display: inline;
+                padding: 5px;
+                margin: 10px;
+                background-color: turquoise;
+                text-align: right;
+                border-radius: 5px;
+            }
+        </style>
 
- 
+        <bchat-layout bannertitle="Red SMS">
 
-        <template id="msgList" is="dom-repeat" items="[[messages]]">
-            <div>[[item.name]]: <span>[[item.message]]</span></div>
-         </template>
+            <core-list data="{{messages}}" class="list">
+                <template>
+                    <div class="row">
+                        <span> {{model.name}}</span>
+                        <span> {{model.message}}</span>
+                    </div>
+                </template>
+            </core-list>
 
-         <p>
+            <p>
 
-        <div>
-            <input is="iron-input" bind-value="{{message}}" value="{{value::input}}">
-            <button is="paper-icon-button" on-tap="sendMessage">Send</button>
-        </div>
-        <br>
-        bind to <code>bind-value</code>: <span>[[message]]</span>
-        <br>
-        bind to <code>value::input</code>: <span>{{value}}</span>
-        </p>
+            <div>
+                <input is="core-input" value="{{message}}" ">
+                <button is="paper-icon-button" on-tap="{{sendMessage}}">Send</button>
+            </div>
+            <br>
+            bind to <code>value::input</code>: <span>{{message}}</span>
+            </p>
 
-
+        </bchat-layout>
     </template>
 
-</dom-module>
+    <script>
+        Polymer('bchat-console', {  // jshint ignore:line
 
-<script>
-    Polymer({
-        is: 'bchat-console',
-        message: 'coucou',
-        lastRecieveMsg: undefined,
-        lastSendMsg: undefined,
+            message: 'coucou',
+            ready: function () {
+                this.messages = [
+                    {name: 'Bob', message: 'Hello Alice'},
+                    {name: 'Alice', message: 'Hi Bob!!!'}
+                ];
+            },
+            sendMessage: function (event, data) {
+                var sendMsg = {name: 'me', message: this.message};
+                this.messages.push(sendMsg);
+                this.message = '';
+            }
+        });
+    </script>
 
-        properties: {
-            first: String,
-            last: String
-        },
-        ready: function () {
-            this.messages = [
-                {name: 'Bob', message: 'Hello Alice'},
-                {name: 'Alice', message: 'Hi Bob!!!'}
-            ];
-        },
-        sendMessage: function (event, data) {
-            var sendMsg = {name: 'me', message: this.message};
-            this.messages.push(sendMsg);
-            this.lastSendMsg= sendMsg;
-            this.message = '';
-        }
-    });
-</script>
+</polymer-element>

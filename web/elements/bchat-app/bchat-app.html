@@ -1,32 +1,33 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="bchat-app">
+<polymer-element name="bchat-app" attributes="">
 
-    <style>
-        :host {
-            display: block;
-        }
-
-    </style>
 
     <template>
 
 
-        <bchat-layout>
-            <div>
-                <h1>
-                    Le content of Chat
-                </h1>
+        <style>
+            :host {
+                display: block;
+            }
+            #pages {
+                height: 100vh;
+            }
+
+        </style>
+        <core-animated-pages id="pages" valueattr="route" selected="home">
+            <section route="home">
+                <bchat-conversations></bchat-conversations>
+            </section>
+            <section route="chat">
                 <bchat-console></bchat-console>
-            </div>
-        </bchat-layout>
+            </section>
+        </core-animated-pages>
 
 
     </template>
 
-</dom-module>
-<script>
-    Polymer({
-        is: 'bchat-app'
-    });
-</script>
+    <script>
+        Polymer('bchat-app', {});
+    </script>
+</polymer-element>

@@ -53,7 +53,7 @@
     "gulp-usemin": "^0.3.11",
     "gulp-useref": "^1.1.2",
     "gulp-util": "^3.0.4",
-    "gulp-vulcanize": "^6.0.0",
+    "gulp-vulcanize": "^5.0.0",
     "gulp-watch": "^4.2.4",
     "gulp-webp": "^2.3.0",
     "gulp-zip": "^3.0.2",

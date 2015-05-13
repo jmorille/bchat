@@ -1,0 +1,68 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="bchat-conversations" attributes="">
+
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            .list {
+                height: 100vh;
+            }
+            .row {
+                display: inline;
+                padding: 5px;
+                margin: 10px;
+                border: 1px;
+                border-radius: 5px;
+            }
+            /*paper-fab {*/
+                /*position: fixed;*/
+                /*right: 16px;*/
+                /*bottom: 16px;*/
+                /*z-index: 200;*/
+            /*}*/
+
+        </style>
+
+        <bchat-layout bannertitle="Conversations Red SMS">
+            <paper-fab icon="add" title="Add" on-tap="{{addHandler}}"></paper-fab>
+
+            <core-list data="{{conversations}}" class="list">
+                <template>
+                    <div class="row">
+                        <span> {{model.name}}</span>
+                        <span> {{model.message}}</span>
+                    </div>
+                </template>
+            </core-list>
+
+
+        </bchat-layout>
+    </template>
+
+    <script>
+        Polymer('bchat-conversations', {  // jshint ignore:line
+
+            message: 'coucou',
+            ready: function () {
+                this.conversations = [
+                    {name: 'Bob', phone: '06 37 47 92 93'},
+                    {name: 'Alice', phone: '07 03 03 01 01'}
+                ];
+            },
+            addHandler: function (event, data) {
+                var that = this;
+                navigator.contacts.pickContact(function(contact){
+                    console.log('The following contact has been selected:' + JSON.stringify(contact));
+                    var contact = {name :  JSON.stringify(contact)};
+                    that.conversations.push(contact);
+                },function(err){
+                    console.log('Error: ' + err);
+                });
+            }
+        });
+    </script>
+
+</polymer-element>

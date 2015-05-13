@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "Red Sms",
+  "short_name": "RedSms",
+  "description": "Sms Secured",
+  "version": "0.0.1",
+  "minimum_chrome_version": "38",
+  "icons": {
+    "128": "assets/icon_128.png"
+  },
+  "offline_enabled": true,
+  "permissions": [
+    "storage",
+    "notifications",
+    {
+      "contacts": {
+        "access": "readwrite",
+        "description": "Describe why there is a need for such permission"
+      }
+    }
+  ],
+  "app": {
+    "background": {
+      "scripts": [ "/scripts/ca_chromereload.js",
+        "/scripts/ca_background.js"
+      ]
+    }
+  }
+}
