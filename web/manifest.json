@@ -10,7 +10,6 @@
   },
   "offline_enabled": true,
   "permissions": [
-    "storage",
     "notifications",
     {
       "contacts": {
@@ -21,7 +20,7 @@
   ],
   "app": {
     "background": {
-      "scripts": [ "/scripts/ca_chromereload.js",
+      "scripts": [
         "/scripts/ca_background.js"
       ]
     }

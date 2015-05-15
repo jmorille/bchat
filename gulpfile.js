@@ -283,6 +283,12 @@ gulp.task('cp:watch', ['cp'], function (cb) {
 });
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Copy Dependancies TASKS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Images TASKS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -388,7 +394,7 @@ var vulcanizeFunc = function (cb) {
       inline: true,
       csp: true,
       excludes: {
-        imports: ['polymer.html$'],
+        imports: ['polymer.html'],
         styles: ['/styles/main.css']
       }
     }))
