@@ -74,5 +74,9 @@
   },
   "engines": {
     "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "cca": "^0.7.0",
+    "cordova": "^5.0.0"
   }
 }

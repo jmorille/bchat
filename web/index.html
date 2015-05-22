@@ -12,12 +12,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
 <head>
 
-  <title>iron-flex-layout</title>
+  <title>Red SMS</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#303F9F">
+  <!-- Enable "installability" -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css" shim-shadowdom>
+  <!-- endbuild-->
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+  <!-- build:vulcanized-->
   <link rel="import" href="elements/elements.html">
+  <!-- endbuild -->
+
+  <!-- build:js scripts/app.js -->
+  <script src="scripts/app.js"></script>
+  <!-- endbuild-->
 
   <style>
     html, body, bchat-app {
