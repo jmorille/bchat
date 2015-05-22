@@ -10,13 +10,20 @@
 
     <template>
 
- 
 
-        <template id="msgList" is="dom-repeat" items="[[messages]]">
-            <div>[[item.name]]: <span>[[item.message]]</span></div>
-         </template>
+        <template id="msgList" is="dom-repeat" items="{{messages}}">
+            <div>
+                <span>{{item.name}}</span>
+                <span>: </span>
+                <span>{{item.message}}</span>
+                <span>( </span>
+                <span>{{item.ordered}}</span>
+                <span>)</span>
+            </div>
+            <button on-click="order">Order</button>
+        </template>
 
-         <p>
+        <p>
 
         <div>
             <input is="iron-input" bind-value="{{message}}" value="{{value::input}}">
@@ -28,6 +35,9 @@
         bind to <code>value::input</code>: <span>{{value}}</span>
         </p>
 
+        <input is="iron-input" bind-value="{{first}}">
+        <code>bind-value</code>: <span>{{first}}</span>
+
 
     </template>
 
@@ -36,25 +46,35 @@
 <script>
     Polymer({
         is: 'bchat-console',
-        message: 'coucou',
+
         lastRecieveMsg: undefined,
         lastSendMsg: undefined,
 
         properties: {
             first: String,
-            last: String
-        },
-        ready: function () {
-            this.messages = [
-                {name: 'Bob', message: 'Hello Alice'},
-                {name: 'Alice', message: 'Hi Bob!!!'}
-            ];
+            last: String,
+
+            messages: {
+                type: Array,
+                notify: true,
+                value: [
+                    {name: 'Bob', message: 'Hello Alice', ordered: 0},
+                    {name: 'Alice', message: 'Hi Bob!!!', ordered: 0}
+                ]
+            }
         },
         sendMessage: function (event, data) {
-            var sendMsg = {name: 'me', message: this.message};
-            this.messages.push(sendMsg);
-            this.lastSendMsg= sendMsg;
+            var sendMsg = {name: 'me', message: this.message, ordered: 0};
+            //   this.messages.push(sendMsg);
+            this.push('messages', sendMsg);
+            console.log('add msg', sendMsg);
+            console.dir(this.messages);
+            this.lastSendMsg = sendMsg;
             this.message = '';
+        },
+        order: function(e) {
+            var model = e.model;
+            model.set('item.ordered', model.item.ordered+1);
         }
     });
 </script>
