@@ -63,6 +63,7 @@
                 ]
             }
         },
+        observers: [ 'usersAddedOrRemoved(messages.splices)' ],
         sendMessage: function (event, data) {
             var sendMsg = {name: 'me', message: this.message, ordered: 0};
             //   this.messages.push(sendMsg);
@@ -72,9 +73,23 @@
             this.lastSendMsg = sendMsg;
             this.message = '';
         },
-        order: function(e) {
+        order: function (e) {
             var model = e.model;
-            model.set('item.ordered', model.item.ordered+1);
+            model.set('item.ordered', model.item.ordered + 1);
+        },
+        usersAddedOrRemoved: function (changeRecord) {
+            if (!changeRecord)
+            {
+                return;
+            }
+            changeRecord.indexSplices.forEach(function (s) {
+                s.removed.forEach(function (user) {
+                    console.log(user.name + ' was  removed');
+                });
+                console.log(s.addedCount + ' users  were added');
+            }, this);
         }
-    });
+
+    })
+    ;
 </script>
