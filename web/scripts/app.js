@@ -19,6 +19,12 @@
             'font-size:1.5em;color:#4558c9;', 'color:#d61a7f;font-size:1em;');
     });
 
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log('deviceready', navigator.contacts);
+    }
+
+
 // wrap document so it plays nice with other libraries
 // http://www.polymer-project.org/platform/shadow-dom.html#wrappers
 })(window, document);

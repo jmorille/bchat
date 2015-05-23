@@ -25,6 +25,7 @@ var del = require('del');
 //var sass = require('gulp-sass');
 //var autoprefixer = require('gulp-autoprefixer');
 var vulcanize = require('gulp-vulcanize');
+var crisper = require('gulp-crisper');
 
 // Debug
 var debug = require('gulp-debug');
@@ -373,7 +374,7 @@ gulp.task('watch:sass', ['sass'], function (cb) {
 
 // Vulcanize - Internal
 var vulcanizeFunc = function (cb) {
-    var DEST_DIR = path.buildVulcanized ;
+    var DEST_DIR = path.buildVulcanized+'/elements/' ;
     return gulp.src('elements/elements.html', {cwd: path.app, base: path.app})
         //.pipe(cache('vulcanizingDD')) // NOT WORKING BUT WHY ?
         .pipe($.if(isErrorEatByWatch, $.plumber({errorHandler: errorNotif('Vulcanize Error')})))
@@ -381,14 +382,12 @@ var vulcanizeFunc = function (cb) {
         //  .pipe($.rename('elements.vulcanized.html'))
         //  abspath: path.app,
         .pipe(vulcanize({
-            dest: DEST_DIR,
+            abspath: '',
+            excludes: [],
             stripExcludes: false,
-            inlineScripts: true,
-            inlineCss: true,
-            implicitStrip: true,
-            stripComments: false
-            //excludes:  ['polymer.html']  
+            inlineScripts: false
         }))
+        .pipe(crisper())
         .pipe(gulp.dest(DEST_DIR))
         .pipe(livereload());
     //  .pipe(browserSyncReload({stream: true}));

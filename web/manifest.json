@@ -9,6 +9,7 @@
     "128": "assets/icon_128.png"
   },
   "offline_enabled": true,
+  "type": "privileged",
   "permissions": [
     "notifications",
     {

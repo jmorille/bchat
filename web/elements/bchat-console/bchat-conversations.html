@@ -1,0 +1,66 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="bchat-conversations">
+
+    <style>
+        :host {
+            display: block;
+        }
+    </style>
+
+    <template>
+
+        <button is="paper-icon-button" on-tap="addConversation">Add</button>
+        <template id="msgList" is="dom-repeat" items="{{conversations}}">
+            <div>
+                <span>{{item.displayName}}</span>
+                <span>{{item.phoneNumber}}</span>
+            </div>
+        </template>
+
+    </template>
+</dom-module>
+
+
+<script>
+    Polymer({
+        is: 'bchat-conversations',
+
+        lastRecieveMsg: undefined,
+        lastSendMsg: undefined,
+
+        properties: {
+            first: String,
+            last: String,
+
+            conversations: {
+                type: Array,
+                notify: true,
+                value: [
+                    {displayName: 'Test', phoneNumber: '0637474399', ordered: 0},
+                    {displayName: 'Ophélie', phoneNumber: '0766048649', ordered: 0}
+                ]
+            }
+        },
+        addConversation: function (event, data) {
+            if (typeof window.cordova !== 'undefined') {
+                // use contacts plugin
+                console.log('Contact list', navigator.contacts);
+                var contactSuccess = this.contactPickSuccess.bind(this);
+                navigator.contacts.pickContact(contactSuccess, function (err) {
+                    console.log('Error: ' + err);
+                });
+            }
+        },
+        contactPickSuccess: function (contact) {
+            console.log('The following contact has been selected:' + JSON.stringify(contact));
+            console.log('Contact photo : ', contact.photos);
+            this.push('conversations', contact);
+        },
+        openConversation: function (e, data) {
+            console.log('Open conversation : ', data);
+        }
+
+
+    });
+</script>
