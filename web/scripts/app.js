@@ -12,16 +12,18 @@
     //};
 
     // Polymer Ready Event
-    document.addEventListener('polymer-ready', function () {
+    document.addEventListener('WebComponentsReady', function () {
         // Perform some behaviour
         // console.log('Polymer is ready to rock!');
-        console.log('%cWelcome to Cordova App Killer!\n%cSpéciale dédicace pour Christophe',
+        console.log('%cWelcome to Red Sms!\n%cPrivate communication is the begin of the true liberty',
             'font-size:1.5em;color:#4558c9;', 'color:#d61a7f;font-size:1em;');
     });
 
+
+    // Plugin Events
     document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady() {
-        console.log('deviceready', navigator.contacts);
+        console.log('Plugins contacts : ', navigator.contacts !== undefined);
     }
 
 
