@@ -6,13 +6,32 @@
         :host {
             display: block;
         }
+        .addButton {
+            background-color:  red;
+
+        }
+        .conversationLine {
+            height: 60px;
+        }
+
+        .avatar {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #ccc;
+        }
+
     </style>
 
     <template>
+        <paper-fab icon="add" class="addButton" on-tap="addConversation"></paper-fab>
 
-        <button is="paper-icon-button" on-tap="addConversation">Add</button>
+
         <template id="msgList" is="dom-repeat" items="{{conversations}}">
-            <div>
+
+            <div class="conversationLine">
                 <span>{{item.displayName}}</span>
                 <span>{{item.phoneNumber}}</span>
             </div>

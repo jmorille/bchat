@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="bchat-app">
+<dom-module id="bchat-menu">
 
     <style>
         :host {
@@ -11,22 +11,20 @@
 
     <template>
 
-        <iron-pages selected="{{pageSelected}}">
-            <bchat-layout>
-                <bchat-conversations></bchat-conversations>
-            </bchat-layout>
+        <paper-menu  class="list" selected="{{pageSelected}}">
+            <paper-item>Inbox</paper-item>
+            <paper-item disabled>Starred</paper-item>
+            <paper-item>Sent mail</paper-item>
+            <paper-item>Drafts</paper-item>
+        </paper-menu>
 
-            <bchat-layout>
-                <bchat-console></bchat-console>
-            </bchat-layout>
-        </iron-pages>
 
     </template>
 
 </dom-module>
 <script>
     Polymer({
-        is: 'bchat-app',
+        is: 'bchat-menu',
         properties: {
             pageSelected: {
                 type: Number,

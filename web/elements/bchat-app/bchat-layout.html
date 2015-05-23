@@ -45,19 +45,17 @@
             <paper-header-panel drawer mode="waterfall" tall-class="medium-tall">
                 <div class="paper-header">waterfall-tall (tallClass: medium-tall)</div>
                 <div class="content">
-                    Menu
+                    <bchat-menu page-selected="{{pageSelected}}"></bchat-menu>
                 </div>
             </paper-header-panel>
             <paper-header-panel main mode="waterfall-tall" tall-class="medium-tall">
                 <div  class="paper-header">
-                    <paper-icon-button icon="menu" title="menu"></paper-icon-button>
+                    <paper-icon-button icon="menu" title="menu" paper-drawer-toggle></paper-icon-button>
                     <paper-icon-button icon="arrow-back" title="arrow-back"></paper-icon-button>
-                    <paper-icon-button class="red" icon="favorite" title="red icon">coucou</paper-icon-button>
-                    <button paper-drawer-toggle>toggle drawer</button>
-                    <div class="bottom indent">BChat</div>
+                    <div class="bottom indent">Red SMS</div>
                 </div>
                 <div class="content fit">
-                    <div>Content</div>
+                    <div>Content <span>{{pageSelected}}</span></div>
                     <content></content>
                 </div>
             <paper-header-panel>
@@ -69,6 +67,15 @@
 </dom-module>
 <script>
     Polymer({
-        is: 'bchat-layout'
+        is: 'bchat-layout',
+        properties: {
+            pageSelected: {
+                type: Number,
+                value: 0
+            }
+        },
+        behaviors: [
+            Polymer.IronFitBehavior
+        ]
     });
 </script>
