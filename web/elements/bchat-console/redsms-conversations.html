@@ -43,8 +43,11 @@
         <bchat-layout>
             <button is="paper-button" on-tap="loadDatas">Load</button>
             <paper-fab icon="add" class="addButton" on-tap="addConversation"></paper-fab>
-
-            <iron-selector multi attr-for-selected="thread-id" selected-values='[4,2]'>
+            <template id="msgList" is="dom-repeat" items="{{multiSelect}}">
+                <span>{{item}}</span>
+            </template>
+            
+            <iron-selector multi attr-for-selected="thread-id" selected-values="{{multiSelect}}">
                 <template id="msgList" is="dom-repeat" items="{{conversations}}">
                     <section class="conversationLine" on-tap="_onForumTapped" thread-id$="[[item.id]]">
                         <iron-image class="avatar"
@@ -71,6 +74,11 @@
 
         properties: {
             conversations: {
+                type: Array,
+                notify: true,
+                value: []
+            },
+            multiSelect: {
                 type: Array,
                 notify: true,
                 value: []
