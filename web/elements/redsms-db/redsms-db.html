@@ -69,6 +69,12 @@
                     cb(conversations);
                 });
             },
+            getConversation: function (primaryKey, cb) {
+                var db = this.db;
+                db.conversations.get(primaryKey, function (item) {
+                    cb(item);
+                });
+            },
             getAllMessage: function (conversationId, cb) {
                 var db = this.db;
                 db.messages.where('conversationId').equals(conversationId).toArray(function (messages) {
