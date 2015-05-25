@@ -22,96 +22,40 @@
         tableConversation: 'conversations',
         created: function () {
             this._initDb();
-            this._openDb();
+            //this._openDb();
         },
         _initDb: function () {
             this.db = new Dexie("redsms-db");
-            db.version(1).stores({
+            Dexie.Promise.on('error', function(err) {
+                // Log to console or show en error indicator somewhere in your GUI...
+                console.log("Uncaught error: " + err);
+            });
+            this.db.version(1).stores({
                 conversations: '++id,displayName,phoneNumber',
                 threads: '++id,conversationId,phoneNumber'
+            }).upgrade (function (trans) {
+              //  trans.conversations.add({displayName: 'Alice', phoneNumber: '0637474399', ordered: 0});
+              //  trans.conversations.add({displayName: 'Bob', phoneNumber: '0766048649', ordered: 0});
             });
+            this.db.open();
         },
         _openDb: function () {
-            var that = this;
-            var request = window.indexedDB.open("RedSmsDatabase", this.dbVersion);
-            request.onupgradeneeded = this._onUpgradeNeeded.bind(this);
-            request.onerror = function(event) {
-                console.log("Database error: " + event.target.errorCode);
-            };
-            request.onsuccess = function(event) {
-                that.db =  event.target.result;
-                console.log('Open IndexedDb Success',  that.db);
-            };
+            var db = this.db;
+            db.transaction("rw", db.conversations , function() {
+                db.conversations.add({displayName: 'Alice', phoneNumber: '0637474399', ordered: 0});
+                db.conversations.add({displayName: 'Bob', phoneNumber: '0766048649', ordered: 0});
+            });
         },
-        _onUpgradeNeeded: function (event) {
-            var that= this;
-            var db = event.target.result;
-            console.log('_onUpgradeNeeded Db', db);
-            if (event.oldVersion < 1) {
-                // Create an objectStore for this database
-                var objectStore = db.createObjectStore(this.tableConversation, {autoIncrement: true});
-                objectStore.createIndex("displayName", "displayName", {unique: false});
-                objectStore.createIndex("phoneNumber", "phoneNumber", {unique: true});
 
-                // Use transaction oncomplete to make sure the objectStore creation is
-                // finished before adding data into it.
-                objectStore.transaction.oncomplete = function (event) {
-                    // Store values in the newly created objectStore.
-                    var customerObjectStore = db.transaction(that.tableConversation, "readwrite").objectStore(that.tableConversation);
-                    var customerData = [
-                        {displayName: 'Alice', phoneNumber: '0637474399', ordered: 0},
-                        {displayName: 'Bob', phoneNumber: '0766048649', ordered: 0}
-                    ];
-                    for (var i in customerData) {
-                        customerObjectStore.add(customerData[i]);
-                    }
-                }
-            }
-        },
-        _createTransaction: function () {
-            var transaction = this.db.transaction([this.tableConversation], "readwrite");
-        },
         addConversation: function (data, onsuccess, onerror) {
-            var transaction = this.db.transaction([this.tableConversation], "readwrite");
-            transaction.oncomplete = function(event) {
-                console.log("All done!");
-            };
-
-            transaction.onerror = function(event) {
-                // Don't forget to handle errors!
-            };
-            var objectStore = transaction.objectStore(this.tableConversation);
-            var request = objectStore.add(data);
-            request.onsuccess = function(event) {
-                // event.target.result == customerData[i].ssn;
-                if (onsuccess) {
-                    onsuccess(event);
-                }
-            };
-            request.onerror = function (event) {
-                if (onerror) {
-                    onerror(event);
-                }
-            }
-        }, 
+            var db = this.db;
+            db.conversations.add(data);
+        },
         getAllConversation: function (cb) {
-            var conversations = [];
-
-            var transaction = this.db.transaction([this.tableConversation], "readwrite");
-            var objectStore = transaction.objectStore(this.tableConversation );
-            objectStore.openCursor().onsuccess = function(event) {
-                var cursor = event.target.result;
-                if (cursor) {
-                    conversations.push(cursor.value);
-                    cursor.continue();
-                } else {
-                   if (cb) {
-                       console.log('Return ', conversations);
-                       cb(conversations);
-                   }
-                }
-            };
-
+            var db = this.db;
+            db.conversations.toCollection().toArray(function (conversations) {
+                cb(conversations);
+            });
         }
 
     });

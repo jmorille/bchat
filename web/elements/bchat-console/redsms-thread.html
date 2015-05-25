@@ -1,0 +1,76 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="redsms-thread">
+
+    <style>
+        :host {
+            display: block;
+        }
+    </style>
+
+    <template>
+        <more-route context name="thread" params="{{params}}"></more-route>
+
+        <bchat-layout route-back="root" page-title="{{params.threadId}}">
+
+            <template id="msgList" is="dom-repeat" items="{{messages}}">
+                <div>
+                    <span>{{item.name}}</span>
+                    <span>: </span>
+                    <span>{{item.message}}</span>
+                </div>
+            </template>
+
+
+
+            <div>
+                <input is="iron-input" bind-value="{{message}}" placeholder="Envoyer un SMS non-chiffré">
+                <button is="paper-icon-button" on-tap="sendMessage">Send</button>
+            </div>
+
+        </bchat-layout>
+    </template>
+
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'redsms-thread',
+
+        lastRecieveMsg: undefined,
+        lastSendMsg: undefined,
+
+        properties: {
+            first: String,
+            last: String,
+
+            messages: {
+                type: Array,
+                notify: true,
+                value: [
+                    {name: 'Bob', message: 'Hello Alice', ordered: 0},
+                    {name: 'Alice', message: 'Hi Bob!!!', ordered: 0}
+                ]
+            }
+        },
+        observers: ['usersAddedOrRemoved(messages.splices)'],
+        sendMessage: function (event, data) {
+            var sendMsg = {name: 'me', message: this.message, ordered: 0};
+            this.push('messages', sendMsg);
+            this.message = '';
+        },
+        usersAddedOrRemoved: function (changeRecord) {
+            if (!changeRecord) {
+                return;
+            }
+            changeRecord.indexSplices.forEach(function (s) {
+                s.removed.forEach(function (user) {
+                    console.log(user.name + ' was  removed');
+                });
+                console.log(s.addedCount + ' users  were added');
+            }, this);
+        }
+
+    })
+    ;
+</script>

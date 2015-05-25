@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="bchat-conversations">
+<dom-module id="redsms-conversations">
 
     <style>
         :host {
@@ -62,23 +62,17 @@
 
 <script>
     Polymer({
-        is: 'bchat-conversations',
+        is: 'redsms-conversations',
 
-        lastRecieveMsg: undefined,
-        lastSendMsg: undefined,
-
-        properties: {
-            first: String,
-            last: String,
-
+           properties: {
             conversations: {
                 type: Array,
                 notify: true,
-                value: [
-                    {displayName: 'Test', phoneNumber: '0637474399', ordered: 0},
-                    {displayName: 'Ophélie', phoneNumber: '0766048649', ordered: 0}
-                ]
+                value: []
             }
+        },
+        ready: function () {
+          this.loadDatas();
         },
         loadDatas: function () {
             var that = this;
