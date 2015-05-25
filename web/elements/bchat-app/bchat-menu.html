@@ -11,11 +11,10 @@
 
     <template>
 
-        <paper-menu  class="list" selected="{{pageSelected}}">
-            <paper-item>Inbox</paper-item>
-            <paper-item disabled>Starred</paper-item>
-            <paper-item>Sent mail</paper-item>
-            <paper-item>Drafts</paper-item>
+        <paper-menu  class="list"  >
+            <paper-item on-tap="_onTapHome">Home</paper-item>
+            <paper-item on-tap="_onTapPrefs">Préférences</paper-item>
+            <paper-item on-tap="_onTapThread">Thread</paper-item>
         </paper-menu>
 
 
@@ -25,12 +24,26 @@
 <script>
     Polymer({
         is: 'bchat-menu',
-        properties: {
-            pageSelected: {
-                type: Number,
-                value: 0,
-                notify: true
-            }
+        _onTapHome: function(event) {
+            // If you wish to navigate imperatively, `MoreRouting.navigateTo` is the
+            // way to go:
+            console.log('Request navigateTo', 'root');
+            MoreRouting.navigateTo('root');
+            event.preventDefault();
+        },
+        _onTapPrefs: function(event) {
+            // If you wish to navigate imperatively, `MoreRouting.navigateTo` is the
+            // way to go:
+            console.log('Request navigateTo', 'prefs');
+            MoreRouting.navigateTo('prefs');
+            event.preventDefault();
+        },
+        _onTapThread: function(event) {
+            // If you wish to navigate imperatively, `MoreRouting.navigateTo` is the
+            // way to go:
+            console.log('Request navigateTo', 'thread');
+            MoreRouting.navigateTo('thread', {threadId:'toto'});
+            event.preventDefault();
         }
     });
 </script>

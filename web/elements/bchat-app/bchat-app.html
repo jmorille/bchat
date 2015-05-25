@@ -11,16 +11,13 @@
 
     <template>
 
-        <iron-pages selected="{{pageSelected}}">
-            <bchat-layout>
-                <bchat-conversations></bchat-conversations>
-            </bchat-layout>
-
-            <bchat-layout>
-                <bchat-console></bchat-console>
-            </bchat-layout>
-        </iron-pages>
-
+        <more-route-selector>
+            <iron-pages attr-for-selected="route" selected="root">
+                <bchat-conversations route="root"></bchat-conversations>
+                <redsms-preferences route="prefs"></redsms-preferences>
+                <bchat-console route="thread"></bchat-console>
+            </iron-pages>
+        </more-route-selector>
     </template>
 
 </dom-module>
@@ -29,8 +26,8 @@
         is: 'bchat-app',
         properties: {
             pageSelected: {
-                type: Number,
-                value: 0,
+                type: String,
+                value: 'prefs',
                 notify: true
             }
         }

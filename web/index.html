@@ -27,12 +27,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
   <!-- build:css styles/main.css -->
-  <link rel="stylesheet" href="styles/main.css">
+  <!--<link rel="stylesheet" href="styles/main.css">-->
   <!-- endbuild-->
 
   <!-- build:js scripts/webcomponents-lite.js -->
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <!-- endbuild -->
+
+
+  <style is="custom-style">
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    :root {
+      /** --theme-primary: var(--google-pink-500) */
+      --theme-primary: #e91e63;
+    }
+  </style>
+
 
   <!-- build:vulcanized-->
   <link rel="import" href="elements/elements.html">

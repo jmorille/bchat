@@ -6,10 +6,12 @@
         :host {
             display: block;
         }
+
         .addButton {
-            background-color:  red;
+            background-color: red;
 
         }
+
         .conversationLine {
             height: 60px;
         }
@@ -23,20 +25,37 @@
             background: #ccc;
         }
 
+        paper-fab {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 200;
+        }
+
     </style>
 
     <template>
-        <paper-fab icon="add" class="addButton" on-tap="addConversation"></paper-fab>
+        <more-route context name="root"></more-route>
+        <h1>Conv</h1>
+        <bchat-layout>
+            <button is="paper-button" on-tap="loadDatas">Load</button>
+            <paper-fab icon="add" class="addButton" on-tap="addConversation"></paper-fab>
 
 
-        <template id="msgList" is="dom-repeat" items="{{conversations}}">
+            <template id="msgList" is="dom-repeat" items="{{conversations}}">
+                <section class="conversationLine" on-tap="_onForumTapped" thread-id$="[[item.phoneNumber]]">
+                    <iron-image class="avatar"
+                                sizing="contain"
+                                preload fade
+                                src="http://lorempixel.com/40/40/"></iron-image>
+                    <span>{{item.displayName}}</span>
+                    <span>{{item.phoneNumber}}</span>
+                </section>
+            </template>
+        </bchat-layout>
 
-            <div class="conversationLine">
-                <span>{{item.displayName}}</span>
-                <span>{{item.phoneNumber}}</span>
-            </div>
-        </template>
-
+        <more-route id="threadRoute" name="thread"></more-route>
+        <redsms-db id="db"></redsms-db>
     </template>
 </dom-module>
 
@@ -61,6 +80,12 @@
                 ]
             }
         },
+        loadDatas: function () {
+            var that = this;
+              this.$.db.getAllConversation(function(result) {
+                    that.conversations = result;
+              });
+        },
         addConversation: function (event, data) {
             if (typeof window.cordova !== 'undefined') {
                 // use contacts plugin
@@ -78,7 +103,18 @@
         },
         openConversation: function (e, data) {
             console.log('Open conversation : ', data);
-        }
+        },
+        _onForumTapped: function(event) {
+            var threadId = event.currentTarget.getAttribute('thread-id');
+            // One way to navigate to a route is to call the `navigateTo` helper on
+            // a `more-route` element that references it:
+            console.log('Request navigateTo', threadId);
+            this.$.threadRoute.navigateTo({threadId: threadId});
+           event.stopPropagation();
+            // Another way is by calling `MoreRouting.navigateTo` with the name or
+            // path of the route and its params. You can see an example of this in
+            // `polyfora-forum.html`.
+        },
 
 
     });

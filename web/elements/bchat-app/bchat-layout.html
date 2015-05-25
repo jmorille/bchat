@@ -11,57 +11,50 @@
             height: 100%;
         }
 
-        /* TODO: these colors should come from paper-styles/default-theme.html
-             once Polymer/polymer#1415 is fixed. */
-        paper-drawer-panel #drawer {
-            background-color: #3f51b5;
-            border-right: 1px solid #ccc;
+        paper-toolbar{
+            @apply(--layout-horizontal);
         }
-        paper-drawer-panel::shadow #drawer {
-            background-color: #3f51b5;
-            border-right: 1px solid #ccc;
+
+        .content {
+            height:100%;
         }
-        paper-drawer-panel[right-drawer] #drawer {
-            border-left: 1px solid #ccc;
-            border-right: none;
+
+        paper-icon-button {
+            height: 24px;
+            width: 24px;
         }
-        paper-drawer-panel[right-drawer]::shadow #drawer {
-            border-left: 1px solid #ccc;
-            border-right: none;
+
+        paper-icon-button:not(:last-child) {
+            margin-right: 8px;
         }
-        paper-drawer-panel #main  { background-color: #c5cae9 }
-        paper-drawer-panel::shadow #main { background-color: #c5cae9; }
-        button {
-            width: 160px;
-            height: 40px;
-            font-size: 16px;
-            margin: 8px;
-        }
+
     </style>
 
     <template>
 
-        <paper-drawer-panel  id="paperDrawerPanel">
-            <paper-header-panel drawer mode="waterfall" tall-class="medium-tall">
-                <div class="paper-header">waterfall-tall (tallClass: medium-tall)</div>
-                <div class="content">
-                    <bchat-menu page-selected="{{pageSelected}}"></bchat-menu>
+        <paper-drawer-panel id="paperDrawerPanel">
+
+            <paper-header-panel drawer class="flex" >
+                <paper-toolbar  >
+                    <div title>Menu</div>
+                </paper-toolbar>
+                <div class="content fit">
+                    <bchat-menu></bchat-menu>
                 </div>
             </paper-header-panel>
-            <paper-header-panel main mode="waterfall-tall" tall-class="medium-tall">
-                <div  class="paper-header">
-                    <paper-icon-button icon="menu" title="menu" paper-drawer-toggle></paper-icon-button>
-                    <paper-icon-button icon="arrow-back" title="arrow-back"></paper-icon-button>
-                    <div class="bottom indent">Red SMS</div>
-                </div>
+            <paper-header-panel main  class="flex" mode="waterfall">
+                <paper-toolbar  class="medium-tall" >
+                    <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+                    <paper-icon-button icon="arrow-back" title="arrow-back" on-tap="{{_onTapBackAction}}"></paper-icon-button>
+                    <div title class="bottom">{{pageTitle}}</div>
+                    <paper-icon-button icon="more" on-tap="{{_onTapMoreAction}}"></paper-icon-button>
+                </paper-toolbar>
                 <div class="content fit">
-                    <div>Content <span>{{pageSelected}}</span></div>
                     <content></content>
                 </div>
-            <paper-header-panel>
-        </paper-drawer-panel>
+            </paper-header-panel>
 
- 
+        </paper-drawer-panel>
     </template>
 
 </dom-module>
@@ -69,13 +62,16 @@
     Polymer({
         is: 'bchat-layout',
         properties: {
-            pageSelected: {
-                type: Number,
-                value: 0
+            pageTitle: {
+                type:String,
+                value: 'Red Sms'
             }
         },
-        behaviors: [
-            Polymer.IronFitBehavior
-        ]
+        _onTapMoreAction: function () {
+            
+        },
+        _onTapBackAction: function () {
+            
+        }
     });
 </script>
