@@ -32,6 +32,9 @@
             z-index: 200;
         }
 
+        .iron-selected {
+            background-color: red;
+        }
     </style>
 
     <template>
@@ -41,21 +44,23 @@
             <button is="paper-button" on-tap="loadDatas">Load</button>
             <paper-fab icon="add" class="addButton" on-tap="addConversation"></paper-fab>
 
-
-            <template id="msgList" is="dom-repeat" items="{{conversations}}">
-                <section class="conversationLine" on-tap="_onForumTapped" thread-id$="[[item.phoneNumber]]">
-                    <iron-image class="avatar"
-                                sizing="contain"
-                                preload fade
-                                src="http://lorempixel.com/40/40/"></iron-image>
-                    <span>{{item.displayName}}</span>
-                    <span>{{item.phoneNumber}}</span>
-                </section>
-            </template>
+            <iron-selector multi attr-for-selected="thread-id" selected-values='[4,2]'>
+                <template id="msgList" is="dom-repeat" items="{{conversations}}">
+                    <section class="conversationLine" on-tap="_onForumTapped" thread-id$="[[item.id]]">
+                        <iron-image class="avatar"
+                                    sizing="contain"
+                                    preload fade
+                                    src="http://lorempixel.com/40/40/"></iron-image>
+                        <span>{{item.displayName}}</span>
+                        <span>{{item.phoneNumber}}</span>
+                        -- <span>{{item.id}}</span> -- <span>{{item.selected}}</span>
+                    </section>
+                </template>
+            </iron-selector>
         </bchat-layout>
 
         <more-route id="threadRoute" name="thread"></more-route>
-        <redsms-db id="db"></redsms-db>
+        <redsms-db id="db" on-conversations-creating="loadDatas"></redsms-db>
     </template>
 </dom-module>
 
@@ -64,7 +69,7 @@
     Polymer({
         is: 'redsms-conversations',
 
-           properties: {
+        properties: {
             conversations: {
                 type: Array,
                 notify: true,
@@ -72,23 +77,17 @@
             }
         },
         ready: function () {
-          this.loadDatas();
+            this.loadDatas();
         },
         loadDatas: function () {
             var that = this;
-              this.$.db.getAllConversation(function(result) {
-                    that.conversations = result;
-              });
+            this.$.db.getAllConversation(function (result) {
+                that.conversations = result;
+            });
         },
         addConversation: function (event, data) {
-            if (typeof window.cordova !== 'undefined') {
-                // use contacts plugin
-                console.log('Contact list', navigator.contacts);
-                var contactSuccess = this.contactPickSuccess.bind(this);
-                navigator.contacts.pickContact(contactSuccess, function (err) {
-                    console.log('Error: ' + err);
-                });
-            }
+            MoreRouting.navigateTo('addConversation');
+            event.preventDefault();
         },
         contactPickSuccess: function (contact) {
             console.log('The following contact has been selected:' + JSON.stringify(contact));
@@ -98,13 +97,13 @@
         openConversation: function (e, data) {
             console.log('Open conversation : ', data);
         },
-        _onForumTapped: function(event) {
+        _onForumTapped: function (event) {
             var threadId = event.currentTarget.getAttribute('thread-id');
             // One way to navigate to a route is to call the `navigateTo` helper on
             // a `more-route` element that references it:
             console.log('Request navigateTo', threadId);
             this.$.threadRoute.navigateTo({threadId: threadId});
-           event.stopPropagation();
+            event.stopPropagation();
             // Another way is by calling `MoreRouting.navigateTo` with the name or
             // path of the route and its params. You can see an example of this in
             // `polyfora-forum.html`.

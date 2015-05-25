@@ -24,11 +24,14 @@
 
 
             <div>
-                <input is="iron-input" bind-value="{{message}}" placeholder="Envoyer un SMS non-chiffré">
+                <input is="iron-input" bind-value="{{message}}" placeholder="Envoyer un SMS non-chiffré" >
                 <button is="paper-icon-button" on-tap="sendMessage">Send</button>
             </div>
 
         </bchat-layout>
+        <redsms-db id="db" on-conversations-creating="loadDatas"></redsms-db>
+
+
     </template>
 
 </dom-module>
@@ -36,13 +39,7 @@
 <script>
     Polymer({
         is: 'redsms-thread',
-
-        lastRecieveMsg: undefined,
-        lastSendMsg: undefined,
-
         properties: {
-            first: String,
-            last: String,
 
             messages: {
                 type: Array,
@@ -53,7 +50,10 @@
                 ]
             }
         },
-        observers: ['usersAddedOrRemoved(messages.splices)'],
+       // observers: ['usersAddedOrRemoved(messages.splices)'],
+        ready: function() {
+            this.db = this.$.db;
+        },
         sendMessage: function (event, data) {
             var sendMsg = {name: 'me', message: this.message, ordered: 0};
             this.push('messages', sendMsg);

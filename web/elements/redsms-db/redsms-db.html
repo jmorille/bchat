@@ -1,62 +1,87 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="redsms-db">
-
-    <style>
-        :host {
-            display: block;
-        }
-
-    </style>
-
-    <template>
-    </template>
-
-</dom-module>
 <script src="../../bower_components/dexie/dist/latest/Dexie.js"></script>
 <script>
-    Polymer({ // http://www.html5rocks.com/en/tutorials/offline/storage/
-        is: 'redsms-db',
-        db: undefined,
-        dbVersion: 1,
-        tableConversation: 'conversations',
-        created: function () {
-            this._initDb();
-            //this._openDb();
-        },
-        _initDb: function () {
-            this.db = new Dexie("redsms-db");
-            Dexie.Promise.on('error', function(err) {
-                // Log to console or show en error indicator somewhere in your GUI...
-                console.log("Uncaught error: " + err);
-            });
-            this.db.version(1).stores({
-                conversations: '++id,displayName,phoneNumber',
-                threads: '++id,conversationId,phoneNumber'
-            }).upgrade (function (trans) {
-              //  trans.conversations.add({displayName: 'Alice', phoneNumber: '0637474399', ordered: 0});
-              //  trans.conversations.add({displayName: 'Bob', phoneNumber: '0766048649', ordered: 0});
-            });
-            this.db.open();
-        },
-        _openDb: function () {
-            var db = this.db;
-            db.transaction("rw", db.conversations , function() {
-                db.conversations.add({displayName: 'Alice', phoneNumber: '0637474399', ordered: 0});
-                db.conversations.add({displayName: 'Bob', phoneNumber: '0766048649', ordered: 0});
-            });
-        },
+    (function () {
+        var db = undefined;
 
-        addConversation: function (data, onsuccess, onerror) {
-            var db = this.db;
-            db.conversations.add(data);
-        },
-        getAllConversation: function (cb) {
-            var db = this.db;
-            db.conversations.toCollection().toArray(function (conversations) {
-                cb(conversations);
-            });
-        }
+        Polymer({ // http://www.html5rocks.com/en/tutorials/offline/storage/
+            is: 'redsms-db',
+            db: undefined,
+            created: function () {
+                if (!db) {
+                    db = this._initDb();
+                }
+                this.db = db;
+            },
+            detached: function () {
+                this.db.close();
+            },
 
-    });
+            _initDb: function () {
+                var db = new Dexie("redsms-db");
+                Dexie.Promise.on('error', function (err) {
+                    // Log to console or show en error indicator somewhere in your GUI...
+                    console.log("Uncaught error: " + err);
+                });
+                db.version(1).stores({
+                    conversations: '++id,displayName,phoneNumber',
+                    messages: '++id,conversationId,time,displayName,phoneNumber,message'
+                }).upgrade(function (trans) {
+                });
+
+                this._addHook(db);
+                db.on("populate", function () {
+                    // Init your DB with some default statuses:
+                    db.conversations.add({displayName: 'Alice', phoneNumber: '0637474399'});
+                    db.conversations.add({displayName: 'Bob', phoneNumber: '0766048649'});
+                });
+                db.open();
+                return db;
+            },
+            _addHook: function (db) {
+                var that = this;
+                db.conversations.hook('creating', function (primKey, obj, trans) {
+                    console.log('creating', primKey, obj);
+                    that.fire('conversations-creating', {
+                        id: primKey,
+                        obj: obj
+                    });
+                });
+                db.conversations.hook("updating", function (mods, primKey, obj, trans) {
+                    console.log('updating', primKey, obj);
+                    that.fire('conversations-updating', {
+                        id: primKey,
+                        obj: obj
+                    });
+
+                });
+            },
+
+            addConversation: function (data, onsuccess, onerror) {
+                var db = this.db;
+                console.log('addConversation', data);
+                db.conversations.add(data);
+            },
+            getAllConversation: function (cb) {
+                var db = this.db;
+                db.conversations.toArray(function (conversations) {
+                    cb(conversations);
+                });
+            },
+            getAllMessage: function (conversationId, cb) {
+                var db = this.db;
+                db.messages.where('conversationId').equals(conversationId).toArray(function (messages) {
+                    cb(messages);
+                });
+            },
+            addMessage: function (message) {
+                var db = this.db;
+                db.messages.add(message);
+            }
+
+        });
+
+    })();
+
 </script>
