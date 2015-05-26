@@ -1,0 +1,25 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<script>
+    Polymer({ // http://www.html5rocks.com/en/tutorials/offline/storage/
+        is: 'redsms-sender',
+
+        sendSms: function (sms) {
+            console.log('Send Sms :', sms.phoneNumber, sms.message);
+            if (window.sms && window.sms.send) {
+                var success = this._sendSmsSuccess.bind(this);
+                var error = this._sendSmsError.bind(this);
+                var options = undefined;
+                window.sms.send(sms.phoneNumber, sms.message, options, success, error);
+            } else {
+                console.warn('No Sms Pluins');
+            }
+        },
+        _sendSmsSuccess: function () {
+            console.log('Message sent successfully');
+        },
+        _sendSmsError: function (e) {
+            console.log('Message Failed:' + e);
+        }
+    });
+</script>

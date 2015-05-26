@@ -16,6 +16,7 @@ https://github.com/Initsogar/cordova-webintent
 
 ## Plugins Uses
 
-# Contact : https://github.com/apache/cordova-plugin-contacts
+# Contact :  
 
-cca  plugin add cordova-plugin-contacts --save
+cca plugin add --save cordova-plugin-contacts 
+cca plugin add --save https://github.com/cordova-sms/cordova-sms-plugin.git 

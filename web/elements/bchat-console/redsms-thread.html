@@ -31,7 +31,7 @@
 
         </bchat-layout>
         <redsms-db id="service"  ></redsms-db>
-
+        <redsms-sender id="sms"  ></redsms-sender>
 
     </template>
 
@@ -84,11 +84,13 @@
             var sendMsg = {
                 type: 'send',
                 conversationId: this.conversation.id,
+                phoneNumber: this.conversation.phoneNumber,
                 name: 'me',
                 message: this.message
             };
             this.service.addMessage(sendMsg);
             this.push('messages', sendMsg);
+            this.$.sms.sendSms(sendMsg);
             this.message = '';
         },
         

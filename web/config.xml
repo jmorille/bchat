@@ -23,5 +23,6 @@
         <icon src="www/assets/icon_128.png" width="128" />
     </platform>
     <preference name="android-minSdkVersion" value="14" />
+    <plugin name="com.cordova.plugins.sms" spec="https://github.com/cordova-sms/cordova-sms-plugin.git" />
     <plugin name="cordova-plugin-contacts" spec="^1.0.0" />
 </widget>
