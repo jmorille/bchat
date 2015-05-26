@@ -11,7 +11,8 @@
     <template>
         <more-route context name="thread" params="{{params}}"></more-route>
 
-        <bchat-layout route-back="root" page-title="{{params.threadId}}">
+        <bchat-layout route-back="root" page-title="{{conversation.displayName}}">
+            <button is="paper-button" on-tap="loadDatas">Load</button>
 
             <template id="msgList" is="dom-repeat" items="{{messages}}">
                 <div>
@@ -29,7 +30,7 @@
             </div>
 
         </bchat-layout>
-        <redsms-db id="db" on-conversations-creating="loadDatas"></redsms-db>
+        <redsms-db id="service"  ></redsms-db>
 
 
     </template>
@@ -40,7 +41,6 @@
     Polymer({
         is: 'redsms-thread',
         properties: {
-
             messages: {
                 type: Array,
                 notify: true,
@@ -50,15 +50,48 @@
                 ]
             }
         },
-       // observers: ['usersAddedOrRemoved(messages.splices)'],
+        observers: ['_routeChange(params.threadId)'],
+
+
         ready: function() {
-            this.db = this.$.db;
+            this.service = this.$.service;
+            if (this.params.threadId) {
+                this._routeChange(this.params.threadId);
+            }
         },
+
+        _routeChange: function(threadId) {
+            var that = this;
+            if (!this.service || !threadId){
+                that.conversation = undefined;
+                return;
+            }
+            this.service.getConversation(threadId, function (item) {
+                console.log('########## getConversation : ', threadId,   item);
+                that.conversation = item;
+                //that.pageTitle = item.displayName;
+            });
+        },
+        loadDatas: function () {
+            //console.log('Messages List Load Data', event, detail);
+            var that = this;
+            this.service.getAllMessages( that.conversation.id, function (result) {
+                that.messages = result;
+            });
+        },
+
         sendMessage: function (event, data) {
-            var sendMsg = {name: 'me', message: this.message, ordered: 0};
+            var sendMsg = {
+                type: 'send',
+                conversationId: this.conversation.id,
+                name: 'me',
+                message: this.message
+            };
+            this.service.addMessage(sendMsg);
             this.push('messages', sendMsg);
             this.message = '';
         },
+        
         usersAddedOrRemoved: function (changeRecord) {
             if (!changeRecord) {
                 return;

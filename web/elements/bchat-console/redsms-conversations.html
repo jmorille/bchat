@@ -47,8 +47,8 @@
                 <span>{{item}}</span>
             </template>
             
-            <iron-selector multi attr-for-selected="thread-id" selected-values="{{multiSelect}}">
-                <template id="msgList" is="dom-repeat" items="{{conversations}}">
+            <!--<iron-selector multi attr-for-selected="thread-id" selected-values="{{multiSelect}}">-->
+                <template id="msgList" is="dom-repeat" items="{{conversations}}" as="item">
                     <section class="conversationLine" on-tap="_onForumTapped" thread-id$="[[item.id]]">
                         <iron-image class="avatar"
                                     sizing="contain"
@@ -59,11 +59,11 @@
                         -- <span>{{item.id}}</span> -- <span>{{item.selected}}</span>
                     </section>
                 </template>
-            </iron-selector>
+            <!--</iron-selector>-->
         </bchat-layout>
 
         <more-route id="threadRoute" name="thread"></more-route>
-        <redsms-db id="db" on-conversations-creating="loadDatas"></redsms-db>
+        <redsms-db id="db" on-conversations-changed="loadDatas"></redsms-db>
     </template>
 </dom-module>
 
@@ -87,7 +87,8 @@
         ready: function () {
             this.loadDatas();
         },
-        loadDatas: function () {
+        loadDatas: function (event, detail) {
+            //console.log('Conversation List Load Data', event, detail);
             var that = this;
             this.$.db.getAllConversation(function (result) {
                 that.conversations = result;

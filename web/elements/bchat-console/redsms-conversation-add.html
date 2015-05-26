@@ -11,7 +11,7 @@
     <template>
         <more-route context name="addConversation"></more-route>
 
-        <bchat-layout page-tile="Add Conversation">
+        <bchat-layout page-tile="Add Conversation" route-back="root">
             <section layout vertical>
 
                 <button is="paper-button" on-tap="_addConversation">Save</button>
@@ -33,7 +33,7 @@
         <more-route id="threadRoute" name="thread"></more-route>
         <redsms-db id="db"  on-conversations-creating="loadDatas"></redsms-db>
     </template>
-    <redsms-db id="db" on-conversations-creating="loadDatas"></redsms-db>
+    <redsms-db id="db"  ></redsms-db>
 
 </dom-module>
 
@@ -67,9 +67,6 @@
 
             this.displayName = contact.displayName;
             this.phoneNumber = contact.phoneNumber[0];
-        },
-        loadDatas: function () {
-            console.log('--------- loadDatas');
         }
 
     });

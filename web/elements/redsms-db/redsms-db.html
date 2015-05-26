@@ -3,59 +3,173 @@
 <script src="../../bower_components/dexie/dist/latest/Dexie.js"></script>
 <script>
     (function () {
-        var db = undefined;
+        var dbListener = {
+            "creating": {},
+            "updating": {},
+            "deleting": {},
+            "reading": {}
+        };
+        var dbListenerAdd = function (tableName, hook, listener) {
+            if (!dbListener[hook][tableName]) {
+                dbListener[hook][tableName] = [];
+            }
+            return dbListener[hook][tableName].push(listener);
+        };
+        var dbListenerRemove = function (tableName, hook, listener) {
+            var array = dbListener[hook][listener];
+            var index = array.indexOf(listener);
+            if (index > -1) {
+                array.splice(index, 1);
+            }
+        };
+        var initDbHook = function (db) {
+            ['conversations', 'messages'].forEach(function (tableName) {
+                // Init
+//                dbListener.creating[tableName] = [];
+//                dbListener.updating[tableName] = [];
+//                dbListener.deleting[tableName] = [];
+//                dbListener.reading[tableName] = [];
+                // Register Listener
+                db.conversations.hook('creating', function (primKey, obj, trans) {
+                    //   console.log('Internal creating', primKey, obj);
+                    var listeners = dbListener.creating[tableName];
+                    if (listeners && listeners.length > 0) {
+                        listeners.forEach(function (item) {
+                            if (item) {
+                                item(primKey, obj, trans);
+                            }
+                        });
+                    }
+                });
+                db.conversations.hook("updating", function (mods, primKey, obj, trans) {
+                    //  console.log('Internal updating', primKey, obj);
+                    var listeners = dbListener.updating[tableName];
+                    if (listeners && listeners.length > 0) {
+                        listeners.forEach(function (item) {
+                            if (item) {
+                                item(mods, primKey, obj, trans);
+                            }
+                        });
+                    }
+                });
+                db.conversations.hook('deleting', function (primKey, obj, transaction) {
+                    var listeners = dbListener.deleting[tableName];
+                    if (listeners && listeners.length > 0) {
+                        listeners.forEach(function (item) {
+                            if (item) {
+                                item(primKey, obj, transaction);
+                            }
+                        });
+                    }
+                });
+//                db.conversations.hook('reading', function (obj) {
+//                    var listeners = dbListener.reading[tableName];
+//                    if (listeners && listeners.length > 0) {
+//                        listeners.forEach(function (item) {
+//                            if (item) {
+//                                item(obj);
+//                            }
+//                        });
+//                    }
+//                    // Return The Items
+//                    return obj;
+//                });
+            });
+        };
+        var initDb = function () {
+            var db = new Dexie("redsms-db");
+            Dexie.Promise.on('error', function (err) {
+                // Log to console or show en error indicator somewhere in your GUI...
+                console.log("Uncaught error: " + err);
+            });
+            db.version(1).stores({
+                conversations: '++id,displayName,phoneNumber',
+                messages: '++id,conversationId,time,displayName,phoneNumber,message'
+            }).upgrade(function (trans) {
+            });
+            db.on("populate", function () {
+                // Init your DB with some default statuses:
+                db.conversations.add({displayName: 'Alice', phoneNumber: '0637474399'});
+                db.conversations.add({displayName: 'Bob', phoneNumber: '0766048649'});
+            });
+            initDbHook(db);
+            db.open();
+            return db;
+        };
+
+        var db = initDb();
 
         Polymer({ // http://www.html5rocks.com/en/tutorials/offline/storage/
             is: 'redsms-db',
             db: undefined,
             created: function () {
-                if (!db) {
-                    db = this._initDb();
-                }
                 this.db = db;
+                console.log()
+                this._addHook();
             },
             detached: function () {
-                this.db.close();
-            },
-
-            _initDb: function () {
-                var db = new Dexie("redsms-db");
-                Dexie.Promise.on('error', function (err) {
-                    // Log to console or show en error indicator somewhere in your GUI...
-                    console.log("Uncaught error: " + err);
-                });
-                db.version(1).stores({
-                    conversations: '++id,displayName,phoneNumber',
-                    messages: '++id,conversationId,time,displayName,phoneNumber,message'
-                }).upgrade(function (trans) {
-                });
-
-                this._addHook(db);
-                db.on("populate", function () {
-                    // Init your DB with some default statuses:
-                    db.conversations.add({displayName: 'Alice', phoneNumber: '0637474399'});
-                    db.conversations.add({displayName: 'Bob', phoneNumber: '0766048649'});
-                });
-                db.open();
-                return db;
-            },
-            _addHook: function (db) {
                 var that = this;
-                db.conversations.hook('creating', function (primKey, obj, trans) {
-                    console.log('creating', primKey, obj);
-                    that.fire('conversations-creating', {
-                        id: primKey,
-                        obj: obj
+                Object.keys(that.localDbListener).forEach(function (hook) {
+                    Object.keys(that.localDbListener[hook]).forEach(function (tableName) {
+                        dbListenerRemove(that.localDbListener[hook][tableName]);
                     });
                 });
-                db.conversations.hook("updating", function (mods, primKey, obj, trans) {
-                    console.log('updating', primKey, obj);
-                    that.fire('conversations-updating', {
-                        id: primKey,
-                        obj: obj
-                    });
+            },
+            _addHook: function _addHook() {
+                var that = this;
+                this.localDbListener = ['conversations'].reduce(function (acc, tableName) {
+                    var conversationsCreating = function (primKey, obj, trans) {
+                        //  console.log('Instance creating', primKey, obj);
+                        var eventData = {
+                            primKey: primKey,
+                            type: 'creating',
+                            obj: obj
+                        }
+                        var options = {
+                            node: that,
+                            bubbles: true,
+                            cancelable: false
+                        };
+                        this.fire(tableName + '-changed', eventData);
+                        this.fire(tableName + '-creating', eventData);
+                    }.bind(that);
+                    var conversationsUpdating = function (mods, primKey, obj, trans) {
+                        // console.log('Instance updating', primKey, obj);
+                        var eventData = {
+                            id: primKey,
+                            type: 'updating',
+                            obj: obj
+                        }
+                        this.fire(tableName + '-changed', eventData);
+                        this.fire(tableName + '-updating', eventData);
+                    }.bind(that);
+                    var conversationsDeleting = function (primKey, obj, trans) {
+                        //  console.log('Instance creating', primKey, obj);
+                        var eventData = {
+                            id: primKey,
+                            type: 'deleting',
+                            obj: obj
+                        }
+                        this.fire(tableName + '-changed', eventData);
+                        this.fire(tableName + '-deleting', eventData);
+                    }.bind(that);
+                    // Register Listener
+                    dbListenerAdd('conversations', 'creating', conversationsCreating);
+                    dbListenerAdd('conversations', "updating", conversationsUpdating);
+                    dbListenerAdd('conversations', 'deleting', conversationsDeleting);
+                    // Store Listener
+                    acc.creating[tableName] = conversationsCreating;
+                    acc.updating[tableName] = conversationsUpdating;
+                    acc.deleting[tableName] = conversationsDeleting;
+                    return acc;
+                }, {
+                    "creating": {},
+                    "updating": {},
+                    "deleting": {},
+                    "reading": {}
+                });
 
-                });
+
             },
 
             addConversation: function (data, onsuccess, onerror) {
@@ -65,24 +179,29 @@
             },
             getAllConversation: function (cb) {
                 var db = this.db;
-                db.conversations.toArray(function (conversations) {
+                db.conversations.toCollection().toArray(function (conversations) {
+                    console.log('Load Data', conversations);
                     cb(conversations);
                 });
             },
             getConversation: function (primaryKey, cb) {
                 var db = this.db;
-                db.conversations.get(primaryKey, function (item) {
+                var entityId = typeof(primaryKey) === 'string'? parseInt(primaryKey,10) : primaryKey;
+                db.conversations.get( entityId, function (item) {
+                    console.log('Get Conv', primaryKey, ' ==+> ', item);
                     cb(item);
                 });
             },
-            getAllMessage: function (conversationId, cb) {
+            getAllMessages: function (conversationId, cb) {
                 var db = this.db;
                 db.messages.where('conversationId').equals(conversationId).toArray(function (messages) {
+                    console.log('Load Messages : ', messages);
                     cb(messages);
                 });
             },
             addMessage: function (message) {
                 var db = this.db;
+                console.log('Add Messages : ', message);
                 db.messages.add(message);
             }
 
