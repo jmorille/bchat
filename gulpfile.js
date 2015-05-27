@@ -388,7 +388,14 @@ var vulcanizeFunc = function (cb) {
             inlineScripts: true,
             inlineCss: true
         }))
-        .pipe(crisper())
+        .pipe($.crisper())
+        .pipe($.debug({title: 'vulcanize crisper :'}))
+        .pipe($.size() )
+  //      .pipe(debug({title: 'vulcanize htmlMinifier :'}))
+  //      .pipe($.htmlMinifier({collapseWhitespace: true}))
+  //      .pipe($.size() )
+//        .pipe($.if('*.html', $.htmlMinifier({})))
+ //       .pipe($.debug({title: 'vulcanize Save :'}))
         .pipe(gulp.dest(DEST_DIR))
         .pipe(livereload());
     //  .pipe(browserSyncReload({stream: true}));

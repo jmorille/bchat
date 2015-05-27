@@ -12,23 +12,25 @@
         <more-route context name="addConversation"></more-route>
 
         <bchat-layout page-tile="Add Conversation" route-back="root">
+            <paper-icon-button action icon="check" on-tap="_addConversation"></paper-icon-button>
+
             <section layout vertical>
 
                 <button is="paper-button" on-tap="_addConversation">Save</button>
                 <button is="paper-button" on-tap="_pickContact">Pick</button>
 
 
-                <paper-input value="{{displayName}}"  label="Nom" auto-validate required >
+                <paper-input value="{{data.displayName}}"  label="Nom" auto-validate required >
                 </paper-input>
 
-                <paper-input value="{{phoneNumber}}"  label="Phone Number" type="tel" auto-validate required >
+                <paper-input value="{{data.phoneNumber}}"  label="Phone Number" type="tel" auto-validate required >
                 </paper-input>
 
                 </input>
 
 
-                <div>Phone : <span>{{phoneNumber}}</span></div>
-                <div>displayName : <span>{{displayName}}</span></div>
+                <div>Phone : <span>{{data.phoneNumber}}</span></div>
+                <div>displayName : <span>{{data.displayName}}</span></div>
             </section>
 
         </bchat-layout>
@@ -44,7 +46,16 @@
 <script>
     Polymer({
         is: 'redsms-conversation-add',
-
+        properties: {
+            data: {
+                type: Object,
+                value: function(){ return {
+                    displayName: null,
+                    phoneNumber: null
+                }; },
+                notify:true
+            }
+        },
         ready: function () {
             this.db = this.$.db;
         },
@@ -72,10 +83,17 @@
         contactPickSuccess: function (contact) {
             console.log('The following contact has been selected:' + JSON.stringify(contact));
             console.log('Contact photo : ', contact.photos);
+            console.log('Contact phoneNumber : ', contact.phoneNumbers);
 
             this.displayName = contact.displayName;
-            this.phoneNumber = contact.phoneNumber[0];
-            this.avatar = contact.photos[0];
+            this.phoneNumber = this.filterPhoneNumberMobile( contact.phoneNumbers)[0].value.replace("%", "%25");
+            this.avatar = contact.photos.value;
+        },
+        filterPhoneNumberMobile: function (phoneNumbers) {
+            return phoneNumbers.filter(function (item) {
+                return item.type === 'mobile';
+            })
+
         }
 
     });

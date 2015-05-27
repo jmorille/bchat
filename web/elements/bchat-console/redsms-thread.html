@@ -28,7 +28,7 @@
         }
 
         .send .row {
-           @apply(--layout-end-justified)
+        @apply(- -layout-end-justified)
         }
 
         .send .message {
@@ -41,7 +41,7 @@
             position: fixed;
             bottom: 2px;
             width: calc(100% - 256px);
-            background-color:  var(--primary-background-color);
+            background-color: var(--primary-background-color);
         }
 
         .messageForm * {
@@ -55,15 +55,20 @@
             color: var(--paper-green-500);
 
         }
+
         .icon-send {
             color: var(--paper-green-500);
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
         }
+
         .icon-lock {
             color: var(--paper-grey-300);
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
+            position:relative;
+            top:12px;
+            right: 16px;
         }
 
     </style>
@@ -72,33 +77,38 @@
         <more-route context name="thread" params="{{params}}"></more-route>
 
         <bchat-layout route-back="root" page-title="{{conversation.displayName}}">
-            <button is="paper-button" on-tap="loadDatas">Load</button>
+            <paper-icon-button action icon="lock-open" on-tap="_addConversation"></paper-icon-button>
+            <paper-icon-button action icon="refresh" on-tap="loadDatas"></paper-icon-button>
 
-            <template id="msgList" is="dom-repeat" items="{{messages}}" as="item">
-                <div class$="{{item.type}}">
-                    <div class="row horizontal layout center">
-                        <template is="dom-if" if="{{_isTypeReceive(item.type)}}">
-                            <iron-image class="avatar"
-                                        src="[[item.avatar]]"
-                                        preload sizing="cover" fade>
-                            </iron-image>
-                        </template>
-                        <div class="message vertical layout">
-                            <span>{{item.message}}</span>
+
+            <!-- List Message -->
+            <div>
+                <template id="msgList" is="dom-repeat" items="{{messages}}" as="item">
+                    <div class$="{{item.type}}">
+                        <div class="row horizontal layout center">
+                            <template is="dom-if" if="{{_isTypeReceive(item.type)}}">
+                                <iron-image class="avatar"
+                                            src="[[item.avatar]]"
+                                            preload sizing="cover" fade>
+                                </iron-image>
+                            </template>
+                            <div class="message vertical layout">
+                                <span>{{item.message}}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </template>
-
+                </template>
+            </div>
+            <!-- Input Message -->
             <div class="messageForm ">
                 <div class="layout horizontal flex ">
                     <iron-autogrow-textarea bind-value="{{message}}" class="flex" id="toto"
                                             placeholder="Envoyer un SMS non-chiffré">
                     </iron-autogrow-textarea>
                     <div class="layout horizontal center" on-tap="sendMessage">
-                        <paper-ripple class="circle" initial-opacity="0.1" center></paper-ripple>
-                        <iron-icon icon="send"  class="-consend"></iron-icon>
+                        <iron-icon icon="send" class="-consend"></iron-icon>
                         <iron-icon icon="lock" class="icon-lock"></iron-icon>
+                        <paper-ripple class="circle" initial-opacity="0.1" center></paper-ripple>
                     </div>
                 </div>
             </div>

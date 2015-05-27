@@ -32,7 +32,8 @@
                     <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
                     <paper-icon-button icon="arrow-back" title="arrow-back" on-tap="_onTapBackAction"></paper-icon-button>
                     <div title>{{pageTitle}}</div>
-                    <paper-icon-button icon="more-vert" on-tap="_onTapMoreAction"></paper-icon-button>
+
+                    <content select="[action]"></content>
                 </paper-toolbar>
                 <div class="content fit">
                     <content></content>

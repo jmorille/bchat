@@ -15,15 +15,18 @@
         .row {
             height: 80px;
             padding: 16px;
+            @apply(  --paper-font-caption);
         }
 
         .avatar {
             display: inline-block;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            overflow: hidden;
+            margin-right: 16px;
             background: #ccc;
+            background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><text x="5%" y="5%" font-size="30" fill="red">I love SVG!</text></svg>');
+
         }
 
         paper-fab {
@@ -42,6 +45,8 @@
         <more-route context name="root"></more-route>
         <h1>Conv</h1>
         <bchat-layout>
+            <paper-icon-button action icon="more-vert" on-tap="_onTapMoreAction"></paper-icon-button>
+
             <button is="paper-button" on-tap="loadDatas">Load</button>
             <paper-fab icon="add" class="addButton" on-tap="addConversation"></paper-fab>
             <template id="msgList" is="dom-repeat" items="{{multiSelect}}">
