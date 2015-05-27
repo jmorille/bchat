@@ -11,22 +11,7 @@
             height: 100%;
         }
 
-        paper-toolbar {
-        @apply(- -layout-horizontal);
-        }
 
-        .content {
-            height: 100%;
-        }
-
-        paper-icon-button {
-            height: 24px;
-            width: 24px;
-        }
-
-        paper-icon-button:not(:last-child) {
-            margin-right: 8px;
-        }
 
     </style>
 
@@ -34,7 +19,7 @@
 
         <paper-drawer-panel id="paperDrawerPanel">
 
-            <paper-header-panel drawer class="flex">
+            <paper-header-panel drawer class="flex fit">
                 <paper-toolbar>
                     <div title>Menu</div>
                 </paper-toolbar>
@@ -42,13 +27,12 @@
                     <bchat-menu></bchat-menu>
                 </div>
             </paper-header-panel>
-            <paper-header-panel main class="flex" mode="waterfall">
-                <paper-toolbar class="medium-tall">
+            <paper-header-panel main mode="waterfall">
+                <paper-toolbar>
                     <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-                    <paper-icon-button icon="arrow-back" title="arrow-back"
-                                       on-tap="_onTapBackAction"></paper-icon-button>
-                    <div title class="bottom">{{pageTitle}}</div>
-                    <paper-icon-button icon="more" on-tap="_onTapMoreAction"></paper-icon-button>
+                    <paper-icon-button icon="arrow-back" title="arrow-back" on-tap="_onTapBackAction"></paper-icon-button>
+                    <div title>{{pageTitle}}</div>
+                    <paper-icon-button icon="more-vert" on-tap="_onTapMoreAction"></paper-icon-button>
                 </paper-toolbar>
                 <div class="content fit">
                     <content></content>

@@ -385,7 +385,8 @@ var vulcanizeFunc = function (cb) {
             abspath: '',
             excludes: [],
             stripExcludes: false,
-            inlineScripts: true
+            inlineScripts: true,
+            inlineCss: true
         }))
         .pipe(crisper())
         .pipe(gulp.dest(DEST_DIR))

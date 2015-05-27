@@ -12,8 +12,9 @@
 
         }
 
-        .conversationLine {
-            height: 60px;
+        .row {
+            height: 80px;
+            padding: 16px;
         }
 
         .avatar {
@@ -46,19 +47,23 @@
             <template id="msgList" is="dom-repeat" items="{{multiSelect}}">
                 <span>{{item}}</span>
             </template>
-            
+
             <!--<iron-selector multi attr-for-selected="thread-id" selected-values="{{multiSelect}}">-->
-                <template id="msgList" is="dom-repeat" items="{{conversations}}" as="item">
-                    <section class="conversationLine" on-tap="_onForumTapped" thread-id$="[[item.id]]">
-                        <iron-image class="avatar"
-                                    sizing="contain"
-                                    preload fade
-                                    src="http://lorempixel.com/40/40/"></iron-image>
-                        <span>{{item.displayName}}</span>
-                        <span>{{item.phoneNumber}}</span>
-                        -- <span>{{item.id}}</span> -- <span>{{item.selected}}</span>
-                    </section>
-                </template>
+            <template id="msgList" is="dom-repeat" items="{{conversations}}" as="item">
+                <div class="row layout horizontal center" on-tap="_onForumTapped" thread-id$="[[item.id]]">
+                    <iron-image class="avatar"
+                                src="[[item.avatar]]"
+                                preload sizing="cover" fade>
+                    </iron-image>
+                    <div class="layout vertical flex">
+                        <div class="layout horizontal">
+                            <span class="flex">[[item.displayName]]</span>
+                            <span >52 minutes</span>
+                        </div>
+                        <div>[[item.phoneNumber]]</div>
+                    </div>
+                </div>
+            </template>
             <!--</iron-selector>-->
         </bchat-layout>
 

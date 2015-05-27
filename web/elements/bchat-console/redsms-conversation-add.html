@@ -16,13 +16,16 @@
 
                 <button is="paper-button" on-tap="_addConversation">Save</button>
                 <button is="paper-button" on-tap="_pickContact">Pick</button>
-                <paper-input  value="{{displayName}}" placeholder="Nom">
+
+
+                <paper-input value="{{displayName}}"  label="Nom" auto-validate required >
                 </paper-input>
 
+                <paper-input value="{{phoneNumber}}"  label="Phone Number" type="tel" auto-validate required >
+                </paper-input>
 
-                <gold-phone-input country-code="33" phone-number-pattern="X-XX-XX-XX-XX"
-                                  value="{{phoneNumber}}">
-                </gold-phone-input>
+                </input>
+
 
                 <div>Phone : <span>{{phoneNumber}}</span></div>
                 <div>displayName : <span>{{displayName}}</span></div>
@@ -31,23 +34,28 @@
         </bchat-layout>
 
         <more-route id="threadRoute" name="thread"></more-route>
-        <redsms-db id="db"  on-conversations-creating="loadDatas"></redsms-db>
+        <redsms-db id="db" on-conversations-creating="loadDatas"></redsms-db>
     </template>
-    <redsms-db id="db"  ></redsms-db>
-
+    <redsms-db id="db"></redsms-db>
+    <more-route id="threadRoute" name="thread"></more-route>
 </dom-module>
 
 
 <script>
     Polymer({
         is: 'redsms-conversation-add',
-        ready: function() {
-          this.db = this.$.db;
+
+        ready: function () {
+            this.db = this.$.db;
         },
         _addConversation: function () {
+            var that = this;
             this.db.addConversation({
                 phoneNumber: this.phoneNumber,
-                displayName: this.displayName
+                displayName: this.displayName,
+                avatar: this.avatar
+            }, function (entityId) {
+                that.$.threadRoute.navigateTo({threadId: entityId});
             });
 
         },
@@ -67,6 +75,7 @@
 
             this.displayName = contact.displayName;
             this.phoneNumber = contact.phoneNumber[0];
+            this.avatar = contact.photos[0];
         }
 
     });
