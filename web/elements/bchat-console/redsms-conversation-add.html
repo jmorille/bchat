@@ -85,9 +85,9 @@
             console.log('Contact photo : ', contact.photos);
             console.log('Contact phoneNumber : ', contact.phoneNumbers);
 
-            this.displayName = contact.displayName;
-            this.phoneNumber = this.filterPhoneNumberMobile( contact.phoneNumbers)[0].value.replace("%", "%25");
-            this.avatar = contact.photos.value;
+            this.data.displayName = contact.displayName;
+            this.data.phoneNumber = this.filterPhoneNumberMobile( contact.phoneNumbers)[0].value.replace("%", "%25");
+            this.data.avatar = contact.photos.value;
         },
         filterPhoneNumberMobile: function (phoneNumbers) {
             return phoneNumbers.filter(function (item) {
