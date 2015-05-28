@@ -1,0 +1,29 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+
+<script>
+
+    Polymer.TTValidatorBehavior = {
+
+        listeners: {
+            'iron-form-element-register': '_registerElement'
+        },
+        ready: function() {
+            // Holds all the custom elements registered with this form.
+            this._customElements = [];
+        },
+        _registerElement: function(e) {
+            if ( this !== e.target) {
+                this._customElements.push(e.target);
+            }
+        },
+        validate: function(values) {
+            console.log(' this._customElements',  this._customElements);
+            var valid = true;
+            for (var el, i = 0; el = this._customElements[i], i < this._customElements.length; i++) {
+                valid = el.validate() && valid;
+            }
+            return valid;
+        }
+    };
+</script>

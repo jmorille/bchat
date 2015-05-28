@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="tt-form.html">
+
 <dom-module id="redsms-conversation-add">
 
     <style>
@@ -15,26 +17,30 @@
             <paper-icon-button action icon="check" on-tap="_addConversation"></paper-icon-button>
 
             <section layout vertical>
+                <tt-form id="formInput">
 
-                <paper-button on-tap="_addConversation">Save</paper-button>
-                <paper-button on-tap="_pickContact">Pick</paper-button>
-
-
-                <paper-input value="{{data.displayName}}" label="Nom" auto-validate required>
-                </paper-input>
-
-                <paper-input value="{{data.phoneNumber}}" label="Phone Number" type="tel" auto-validate required>
-                </paper-input>
+                    <paper-button on-tap="_addConversation">Save</paper-button>
+                    <paper-button on-tap="_pickContact">Pick</paper-button>
 
 
-                <paper-button on-tap="_openPhoneNumberSelector">OpenDialog</paper-button>
+                    <paper-input value="{{data.displayName}}" label="Nom" auto-validate required>
+                    </paper-input>
+
+                    <paper-input value="{{data.phoneNumber}}" label="Phone Number" type="tel" auto-validate required>
+                    </paper-input>
+
+                    <input is="iron-input">
+
+                    <paper-button on-tap="_openPhoneNumberSelector">OpenDialog</paper-button>
+                </tt-form>
 
                 <div>Phone : <span>{{data.phoneNumber}}</span></div>
                 <div>displayName : <span>{{data.displayName}}</span></div>
             </section>
 
 
-            <redsms-dialog-phones-selector id="phoneSelector" phone-numbers="{{phoneNumbers}}"></redsms-dialog-phones-selector>
+            <redsms-dialog-phones-selector id="phoneSelector"
+                                           phone-numbers="{{phoneNumbers}}"></redsms-dialog-phones-selector>
 
 
             <redsms-db id="db"></redsms-db>
@@ -69,13 +75,15 @@
         },
         _addConversation: function () {
             var that = this;
-            this.db.addConversation({
-                phoneNumber: this.phoneNumber,
-                displayName: this.displayName,
-                avatar: this.avatar
-            }, function (entityId) {
-                that.$.threadRoute.navigateTo({threadId: entityId});
-            });
+            if (this.$.formInput.validate()) {
+                this.db.addConversation({
+                    phoneNumber: this.phoneNumber,
+                    displayName: this.displayName,
+                    avatar: this.avatar
+                }, function (entityId) {
+                    that.$.threadRoute.navigateTo({threadId: entityId});
+                });
+            }
 
         },
         _pickContact: function (event, data) {
@@ -107,6 +115,7 @@
             this.$.phoneSelector.open();
         },
         _openPhoneNumberSelector: function () {
+            console.log('formInput validate ; ', this.$.formInput._validate());
             this.$.phoneSelector.open();
         },
         _selectPhoneNumber: function (phoneNumber) {

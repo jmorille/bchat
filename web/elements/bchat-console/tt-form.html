@@ -1,0 +1,33 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="tt-validator-behaviour.html">
+
+<dom-module id="tt-form">
+
+    <style>
+        :host {
+            display: block;
+        }
+
+    </style>
+
+    <template>
+        <content></content>
+    </template>
+
+</dom-module>
+<script>
+    Polymer({
+        is: 'tt-form',
+        behaviors: [
+            Polymer.TTValidatorBehavior
+        ],
+        _validate: function() {
+            var valid = true;
+            for (var el, i = 0; el = this._customElements[i], i < this._customElements.length; i++) {
+                valid = el.validate() && valid;
+            }
+            return valid;
+        }
+    });
+</script>
