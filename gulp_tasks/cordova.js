@@ -51,7 +51,7 @@ gulp.task('cordova:config', ['cordova:create'], function () {
 // Cordova Mobile - Build (in ./build folder)
 gulp.task('cordova:build', ['cordova:config'], function () {
     var releaseOpts = gulp.prod ? ' --release' : '';
-    var cmd = 'build ' + releaseOpts;
+    var cmd = 'build android ' + releaseOpts;
     return runCordova(cmd);
 });
 

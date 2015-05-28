@@ -69,7 +69,7 @@ gulp.task('cca:build', ['cca:create'], function () {
     var releaseOpts = prod ? ' --release' : '';
     //return gulp.src('*', {read: false, cwd: paths.buildCCA})
     //    .pipe($.shell(['cca build' + releaseOpts], {cwd: paths.buildCCA}));
-    return runCca('build' + releaseOpts);
+    return runCca('build android' + releaseOpts);
 });
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

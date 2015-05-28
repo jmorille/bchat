@@ -26,7 +26,7 @@
                 <paper-input value="{{data.phoneNumber}}"  label="Phone Number" type="tel" auto-validate required >
                 </paper-input>
 
-                </input>
+
 
 
                 <div>Phone : <span>{{data.phoneNumber}}</span></div>
@@ -38,8 +38,19 @@
         <more-route id="threadRoute" name="thread"></more-route>
         <redsms-db id="db" on-conversations-creating="loadDatas"></redsms-db>
     </template>
+
+    <paper-dialog id="phoneSelector" modal>
+        <template id="phoneSelector" is="dom-repeat" items="{{phoneNumbers}}" as="phone">
+           <article>
+               <div on-tap="selectPhoneNumber(phone.phoneNumber)">{{phone.phoneNumber}}</div>
+           </article>
+        </template>
+    </paper-dialog>
+
+
     <redsms-db id="db"></redsms-db>
     <more-route id="threadRoute" name="thread"></more-route>
+
 </dom-module>
 
 
@@ -85,15 +96,29 @@
             console.log('Contact photo : ', contact.photos);
             console.log('Contact phoneNumber : ', contact.phoneNumbers);
 
-            this.data.displayName = contact.displayName;
-            this.data.phoneNumber = this.filterPhoneNumberMobile( contact.phoneNumbers)[0].value.replace("%", "%25");
-            this.data.avatar = contact.photos.value;
+            // Compute Values
+           // var phoneNumber = this.filterPhoneNumberMobile( contact.phoneNumbers)[0].value;
+            var avatar = contact.photos.value;
+
+            // Set Values
+            this.set('data.displayName', contact.displayName);
+            //this.set('data.phoneNumber', contact.phoneNumber);
+            this.set('data.avatar', contact.avatar.url.replace("%", "%25"));
+
+            // Open Dialog
+            this.phoneNumbers = contact.phoneNumbers;
+            this.$.phoneSelector.open();
+
+        },
+        selectPhoneNumber: function (phoneNumber) {
+            this.set('data.phoneNumber', phoneNumber);
+            this.$.phoneSelector.close();
         },
         filterPhoneNumberMobile: function (phoneNumbers) {
             return phoneNumbers.filter(function (item) {
+                console.log('Test Item : ', item);
                 return item.type === 'mobile';
             })
-
         }
 
     });
