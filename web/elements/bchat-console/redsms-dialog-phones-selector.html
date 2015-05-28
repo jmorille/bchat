@@ -1,0 +1,57 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="redsms-dialog-phones-selector">
+
+    <style>
+        :host {
+            display: block;
+        }
+    </style>
+    <template>
+        <paper-dialog id="phoneSelector"
+                      entry-animation="scale-up-animation"
+                      exit-animation="fade-out-animation">
+            <h2>Phone Numbers</h2>
+            <paper-dialog-scrollable>
+                <template is="dom-repeat" items="{{phoneNumbers}}" as="phoneNumber">
+                    <article on-tap="_selectPhoneNumber()">
+                        <div>{{phoneNumber.value}}</div>
+                    </article>
+                </template>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'redsms-dialog-phones-selector',
+        properties: {
+            phoneNumbers: {
+                type: Array,
+                value: [
+                    {value: '01022121121'},
+                    {value: '999999'}
+                ]
+            }
+        },
+        _openPhoneNumberSelector: function () {
+            this.$.phoneSelector.open();
+        },
+        _selectPhoneNumber: function (phoneNumber) {
+            console.log('Select phone : ', phoneNumber);
+            this.$.phoneSelector.close();
+        },
+        open: function () {
+            this.$.phoneSelector.open();
+        },
+        close: function () {
+            this.$.phoneSelector.close();
+
+        }
+
+    });
+</script>

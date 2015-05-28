@@ -16,40 +16,31 @@
 
             <section layout vertical>
 
-                <button is="paper-button" on-tap="_addConversation">Save</button>
-                <button is="paper-button" on-tap="_pickContact">Pick</button>
+                <paper-button on-tap="_addConversation">Save</paper-button>
+                <paper-button on-tap="_pickContact">Pick</paper-button>
 
 
-                <paper-input value="{{data.displayName}}"  label="Nom" auto-validate required >
+                <paper-input value="{{data.displayName}}" label="Nom" auto-validate required>
                 </paper-input>
 
-                <paper-input value="{{data.phoneNumber}}"  label="Phone Number" type="tel" auto-validate required >
+                <paper-input value="{{data.phoneNumber}}" label="Phone Number" type="tel" auto-validate required>
                 </paper-input>
 
 
-
+                <paper-button on-tap="_openPhoneNumberSelector">OpenDialog</paper-button>
 
                 <div>Phone : <span>{{data.phoneNumber}}</span></div>
                 <div>displayName : <span>{{data.displayName}}</span></div>
             </section>
 
+
+            <redsms-dialog-phones-selector id="phoneSelector" phone-numbers="{{phoneNumbers}}"></redsms-dialog-phones-selector>
+
+
+            <redsms-db id="db"></redsms-db>
+            <more-route id="threadRoute" name="thread"></more-route>
         </bchat-layout>
-
-        <more-route id="threadRoute" name="thread"></more-route>
-        <redsms-db id="db" on-conversations-creating="loadDatas"></redsms-db>
     </template>
-
-    <paper-dialog id="phoneSelector" modal>
-        <template id="phoneSelector" is="dom-repeat" items="{{phoneNumbers}}" as="phone">
-           <article>
-               <div on-tap="selectPhoneNumber(phone.phoneNumber)">{{phone.phoneNumber}}</div>
-           </article>
-        </template>
-    </paper-dialog>
-
-
-    <redsms-db id="db"></redsms-db>
-    <more-route id="threadRoute" name="thread"></more-route>
 
 </dom-module>
 
@@ -60,12 +51,18 @@
         properties: {
             data: {
                 type: Object,
-                value: function(){ return {
-                    displayName: null,
-                    phoneNumber: null
-                }; },
-                notify:true
+                value: function () {
+                    return {
+                        displayName: null,
+                        phoneNumber: null
+                    };
+                },
+                notify: true
+            },
+            phoneNumbers: {
+                type: Array
             }
+
         },
         ready: function () {
             this.db = this.$.db;
@@ -97,7 +94,7 @@
             console.log('Contact phoneNumber : ', contact.phoneNumbers);
 
             // Compute Values
-           // var phoneNumber = this.filterPhoneNumberMobile( contact.phoneNumbers)[0].value;
+            // var phoneNumber = this.filterPhoneNumberMobile( contact.phoneNumbers)[0].value;
             var avatar = contact.photos.value;
 
             // Set Values
@@ -108,9 +105,11 @@
             // Open Dialog
             this.phoneNumbers = contact.phoneNumbers;
             this.$.phoneSelector.open();
-
         },
-        selectPhoneNumber: function (phoneNumber) {
+        _openPhoneNumberSelector: function () {
+            this.$.phoneSelector.open();
+        },
+        _selectPhoneNumber: function (phoneNumber) {
             this.set('data.phoneNumber', phoneNumber);
             this.$.phoneSelector.close();
         },
