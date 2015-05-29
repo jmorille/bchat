@@ -100,6 +100,7 @@
                 value: []
             },
             animationConfig: {
+                type: Object,
                 value: function () {
                     return {
                         'exit': [{
@@ -107,14 +108,7 @@
                             id: 'hero',
                             fromPage: this
                         }]
-                    }
-                }
-            },
-            sharedElements: {
-                value: function() {
-                    return {
-                        'hero': this.$.addButton
-                    }
+                    };
                 }
             }
         },
@@ -143,6 +137,16 @@
             console.log('Open conversation : ', data);
         },
         _onForumTapped: function (event) {
+            var target = event.target;
+            console.log("Hero Start target", target);
+            while (target !== this && !target._templateInstance) {
+                target = target.parentNode;
+            }
+            // configure the page animation
+            this.sharedElements = {
+                'hero': target,
+            };
+            // Fire Event Change Page
             var threadId = event.currentTarget.getAttribute('thread-id');
             // One way to navigate to a route is to call the `navigateTo` helper on
             // a `more-route` element that references it:
