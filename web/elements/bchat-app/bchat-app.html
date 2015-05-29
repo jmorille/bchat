@@ -1,23 +1,33 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
+
 <dom-module id="bchat-app">
 
     <style>
+
         :host {
             display: block;
         }
+
+        neon-animated-pages > * {
+            height: 100vh;
+            width: 100vw;
+            background-color: white;
+        }
+
+
 
     </style>
 
     <template>
 
         <more-route-selector>
-            <iron-pages attr-for-selected="route" selected="root">
+            <neon-animated-pages attr-for-selected="route" selected="{{pageSelected}}" >
                 <redsms-conversations route="root"></redsms-conversations>
                 <redsms-preferences route="prefs"></redsms-preferences>
                 <redsms-conversation-add route="addConversation"></redsms-conversation-add>
                 <redsms-thread route="thread"></redsms-thread>
-            </iron-pages>
+            </neon-animated-pages>
         </more-route-selector>
     </template>
 
@@ -28,7 +38,7 @@
         properties: {
             pageSelected: {
                 type: String,
-                value: 'prefs',
+                value: 'root',
                 notify: true
             }
         }

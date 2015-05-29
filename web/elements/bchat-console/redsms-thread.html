@@ -28,7 +28,7 @@
         }
 
         .send .row {
-           @apply(- -layout-end-justified)
+        @apply(- -layout-end-justified)
         }
 
         .send .message {
@@ -71,6 +71,17 @@
             right: 16px;
         }
 
+        .mainContent {
+            height: 100%;
+            background: repeating-linear-gradient(
+                    45deg,
+                    #f5f5f5,
+                    #f5f5f5 8px,
+                    #e0e0e0 8px,
+                    #e0e0e0 16px
+            );
+        }
+
     </style>
 
     <template>
@@ -78,41 +89,44 @@
 
         <bchat-layout route-back="root" page-title="{{conversation.displayName}}">
             <paper-icon-button action icon="lock-open" on-tap="_addConversation"></paper-icon-button>
-            <paper-icon-button action icon="refresh" on-tap="loadDatas"></paper-icon-button>
+            <paper-icon-button id="button" action icon="refresh" on-tap="loadDatas"></paper-icon-button>
+            <paper-icon-button action id="button" icon="clear" on-click="_onClearButtonClick"></paper-icon-button>
 
 
-            <!-- List Message -->
-            <div>
-                <template id="msgList" is="dom-repeat" items="{{messages}}" as="item">
-                    <div class$="{{item.type}}">
-                        <div class="row horizontal layout center">
-                            <template is="dom-if" if="{{_isTypeReceive(item.type)}}">
-                                <iron-image class="avatar"
-                                            src="[[item.avatar]]"
-                                            preload sizing="cover" fade>
-                                </iron-image>
-                            </template>
-                            <div class="message vertical layout">
-                                <span>{{item.message}}</span>
+            <section id="mainContent" class="mainContent">
+
+                <!-- List Message -->
+                <div>
+                    <template id="msgList" is="dom-repeat" items="{{messages}}" as="item">
+                        <div class$="{{item.type}}">
+                            <div class="row horizontal layout center">
+                                <template is="dom-if" if="{{_isTypeReceive(item.type)}}">
+                                    <iron-image class="avatar"
+                                                src="[[item.avatar]]"
+                                                preload sizing="cover" fade>
+                                    </iron-image>
+                                </template>
+                                <div class="message vertical layout">
+                                    <span>{{item.message}}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </template>
-            </div>
-            <!-- Input Message -->
-            <div class="messageForm ">
-                <div class="layout horizontal flex ">
-                    <iron-autogrow-textarea bind-value="{{message}}" class="flex" id="toto"
-                                            placeholder="Envoyer un SMS non-chiffré">
-                    </iron-autogrow-textarea>
-                    <div class="layout horizontal center" on-tap="sendMessage">
-                        <iron-icon icon="send" class="-consend"></iron-icon>
-                        <iron-icon icon="lock" class="icon-lock"></iron-icon>
-                        <paper-ripple class="circle" initial-opacity="0.1" center></paper-ripple>
+                    </template>
+                </div>
+                <!-- Input Message -->
+                <div class="messageForm ">
+                    <div class="layout horizontal flex ">
+                        <iron-autogrow-textarea bind-value="{{message}}" class="flex" id="toto"
+                                                placeholder="Envoyer un SMS non-chiffré">
+                        </iron-autogrow-textarea>
+                        <div class="layout horizontal center" on-tap="sendMessage">
+                            <iron-icon icon="send" class="-consend"></iron-icon>
+                            <iron-icon icon="lock" class="icon-lock"></iron-icon>
+                            <paper-ripple class="circle" initial-opacity="0.1" center></paper-ripple>
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            </section>
         </bchat-layout>
 
         <redsms-db id="service"></redsms-db>
@@ -152,9 +166,40 @@
                         avatar: 'http://lorempixel.com/60/60/'
                     }
                 ]
+            },
+            sharedElements: {
+                type: Object,
+                value: function () {
+                    return {
+                        'hero': this.$.mainContent
+                    };
+                }
+            },
+            animationConfig: {
+                type: Object,
+                value: function () {
+                    return {
+                        'entry': [{
+                            name: 'hero-animation',
+                            id: 'hero',
+                            toPage: this
+                        }],
+                        'exit': [{
+                            name: 'scale-down-animation',
+                            node: this.$.mainContent,
+                            transformOrigin: '50% 50%',
+                            axis: 'y'
+                        }]
+                    }
+                }
             }
         },
         observers: ['_routeChange(params.threadId)'],
+
+        behaviors: [
+            Polymer.NeonAnimatableBehavior
+        ],
+
         _isTypeReceive: function (type) {
             return type !== 'send';
         },
@@ -211,6 +256,9 @@
                 });
                 console.log(s.addedCount + ' users  were added');
             }, this);
+        },
+        _onClearButtonClick: function () {
+            this.fire('close');
         }
 
     })

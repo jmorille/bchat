@@ -176,7 +176,9 @@ var isErrorEatByWatch = false;
 
 // Watch all files changes
 gulp.task('watch', ['watch:sass', 'cp:watch', 'watch:images', 'watch:vulcanize'], function (cb) {
+    console.log('watch isErrorEatByWatch before', isErrorEatByWatch);
     isErrorEatByWatch = true;
+    console.log('watch isErrorEatByWatch after', isErrorEatByWatch);
     livereload.listen();
     cb();
 });
@@ -375,6 +377,7 @@ gulp.task('watch:sass', ['sass'], function (cb) {
 // Vulcanize - Internal
 var vulcanizeFunc = function (cb) {
     var DEST_DIR = path.buildVulcanized+'/elements/' ;
+    console.log('Vulcanize isErrorEatByWatch = ', isErrorEatByWatch);
     return gulp.src('elements/elements.html', {cwd: path.app, base: path.app})
         //.pipe(cache('vulcanizingDD')) // NOT WORKING BUT WHY ?
         .pipe($.if(isErrorEatByWatch, $.plumber({errorHandler: errorNotif('Vulcanize Error')})))

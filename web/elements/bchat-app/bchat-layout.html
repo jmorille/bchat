@@ -4,12 +4,11 @@
 
     <style>
         :host {
-            display: block;
+            height: 100vh;
+            width: 100vw;
         }
 
-        paper-header-panel {
-            height: 100%;
-        }
+
 
 
 
@@ -45,14 +44,24 @@
 
 </dom-module>
 <script>
-    Polymer({
+//             Polymer.IronFitBehavior,
+
+Polymer({
         is: 'bchat-layout',
+        behaviors: [
+            Polymer.NeonAnimatableBehavior
+        ],
+
         properties: {
             pageTitle: {
                 type: String,
                 value: 'Red Sms'
             },
             routeBack: String
+        },
+
+        ready: function () {
+          console.log("Load Layout");
         },
         _onTapMoreAction: function () {
 

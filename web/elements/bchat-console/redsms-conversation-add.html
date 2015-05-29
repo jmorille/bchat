@@ -14,7 +14,7 @@
         <more-route context name="addConversation"></more-route>
 
         <bchat-layout page-tile="Add Conversation" route-back="root">
-            <paper-icon-button action icon="check" on-tap="_addConversation"></paper-icon-button>
+            <paper-icon-button id="button" action icon="check" on-tap="_addConversation"></paper-icon-button>
 
             <section layout vertical>
                 <tt-form id="formInput">
@@ -54,6 +54,8 @@
 <script>
     Polymer({
         is: 'redsms-conversation-add',
+
+
         properties: {
             data: {
                 type: Object,
@@ -67,6 +69,22 @@
             },
             phoneNumbers: {
                 type: Array
+            },
+            animationConfig: {
+                value: function () {
+                    return {
+                        'entry': [{
+                            name: 'hero-animation',
+                            id: 'hero',
+                            toPage: this
+                        }]
+                    }
+                }
+            },
+            sharedElements: {
+                value: function () {
+                    return { 'hero': this.$.hero}
+                }
             }
 
         },
